@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AERO | Autonomous Earth-Responsive Oasis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cinzel:wght@400;600;700;900&family=Quicksand:wght@300;400;500;600;700&family=Montserrat:wght@300;400;600;700&family=Parisienne&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --deep-forest: #1b4332;
+            --forest: #2d6a4f;
+            --green: #40916c;
+            --mint: #52b788;
+            --light-green: #74c69d;
+            --pale-green: #95d5b2;
+            --cream: #f8f9fa;
+            --sand: #e9ecef;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: var(--cream);
+            color: var(--deep-forest);
+            overflow-x: hidden;
+        }
+
+        /* Floating Particles Animation */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, rgba(82, 183, 136, 0.6), transparent);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(64, 145, 108, 0.2);
+            box-shadow: 0 2px 20px rgba(27, 67, 50, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.5rem 0;
+            background: rgba(248, 249, 250, 0.98);
+            box-shadow: 0 4px 30px rgba(27, 67, 50, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Parisienne', cursive;
+            font-size: 2.2rem;
+            color: var(--forest);
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 10px rgba(82, 183, 136, 0.2);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 4px 20px rgba(82, 183, 136, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--deep-forest);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--mint);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--mint);
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            animation: zoomOut 20s infinite;
+        }
+
+        @keyframes zoomOut {
+            0% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(27, 67, 50, 0.3), rgba(27, 67, 50, 0.5));
+        }
+
+        /* Light rays effect */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(82, 183, 136, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 80%, rgba(64, 145, 108, 0.1) 0%, transparent 40%);
+            animation: lightRays 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes lightRays {
+            0%, 100% {
+                transform: rotate(0deg);
+                opacity: 0.5;
+            }
+            50% {
+                transform: rotate(10deg);
+                opacity: 0.8;
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-family: 'Italiana', serif;
+            font-size: 1rem;
+            letter-spacing: 5px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 2s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Parisienne', cursive;
+            font-size: 7rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            text-shadow: 
+                0 0 40px rgba(82, 183, 136, 0.6),
+                0 4px 20px rgba(0, 0, 0, 0.7);
+            line-height: 1;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 
+                    0 0 40px rgba(82, 183, 136, 0.6),
+                    0 4px 20px rgba(0, 0, 0, 0.7);
+            }
+            50% {
+                text-shadow: 
+                    0 0 60px rgba(82, 183, 136, 0.9),
+                    0 4px 20px rgba(0, 0, 0, 0.7),
+                    0 0 80px rgba(82, 183, 136, 0.5);
+            }
+        }
+
+        .hero-description {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            font-weight: 300;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 2s ease-out 1s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3.5rem;
+            animation: fadeIn 2s ease-out 1.5s both;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1.8rem 2.2rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(82, 183, 136, 0.2) inset;
+            transition: all 0.4s ease;
+            min-width: 140px;
+        }
+
+        .stat:hover {
+            transform: translateY(-8px) scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 80px rgba(82, 183, 136, 0.3) inset;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .stat-number {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 0 30px rgba(82, 183, 136, 0.8);
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.1rem 3.2rem;
+            background: rgba(64, 145, 108, 0.9);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                0 0 60px rgba(82, 183, 136, 0.3) inset;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            background: rgba(82, 183, 136, 0.9);
+            box-shadow: 
+                0 15px 60px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(82, 183, 136, 0.5) inset;
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            position: relative;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--pale-green), transparent);
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-number {
+            font-family: 'Italiana', serif;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            color: var(--mint);
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--forest);
+            text-shadow: 0 0 30px rgba(64, 145, 108, 0.15);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--mint), transparent);
+            transition: width 0.6s ease;
+        }
+
+        .section-header:hover .section-title::after {
+            width: 100%;
+        }
+
+        .section-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            color: var(--deep-forest);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* Info Boxes with Enhanced Effects */
+        .info-box {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--pale-green);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 5px 20px rgba(64, 145, 108, 0.08),
+                0 0 40px rgba(64, 145, 108, 0.04) inset;
+            overflow: hidden;
+        }
+
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(82, 183, 136, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .info-box:hover::before {
+            opacity: 1;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .info-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 15px 45px rgba(64, 145, 108, 0.2),
+                0 0 60px rgba(64, 145, 108, 0.1) inset;
+            border-color: var(--mint);
+        }
+
+        .info-box-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--forest);
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-box-text {
+            font-size: 0.95rem;
+            color: var(--deep-forest);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Feature Boxes */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.85);
+            border: 2px solid var(--sand);
+            border-radius: 18px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(64, 145, 108, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(82, 183, 136, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .feature-box:hover::after {
+            left: 100%;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--mint);
+            box-shadow: 
+                0 12px 40px rgba(64, 145, 108, 0.18),
+                0 0 30px rgba(64, 145, 108, 0.08) inset;
+        }
+
+        .feature-icon {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 0 15px rgba(64, 145, 108, 0.3));
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-box:hover .feature-icon {
+            transform: scale(1.1) rotateZ(5deg);
+            filter: drop-shadow(0 0 25px rgba(64, 145, 108, 0.5));
+        }
+
+        .feature-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: var(--forest);
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+            color: var(--deep-forest);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Data Points with Counter Animation */
+        .data-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(149, 213, 178, 0.08);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(149, 213, 178, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .data-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--mint);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .data-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .data-item:hover {
+            background: rgba(149, 213, 178, 0.15);
+            border-color: var(--mint);
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(64, 145, 108, 0.15);
+        }
+
+        .data-label {
+            font-size: 0.9rem;
+            color: var(--forest);
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .data-value {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--mint);
+            text-align: right;
+            text-shadow: 0 2px 10px rgba(82, 183, 136, 0.3);
+        }
+
+        /* Animated counter effect will be added via JavaScript */
+        .data-value.counting {
+            animation: countPulse 0.5s ease;
+        }
+
+        @keyframes countPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Images with Parallax Effect */
+        .main-image {
+            width: 100%;
+            height: 500px;
+            border-radius: 25px;
+            overflow: hidden;
+            border: 3px solid var(--pale-green);
+            box-shadow: 
+                0 10px 40px rgba(64, 145, 108, 0.12),
+                0 0 50px rgba(64, 145, 108, 0.08) inset;
+            margin: 3rem 0;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .main-image:hover {
+            transform: scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(64, 145, 108, 0.2),
+                0 0 80px rgba(64, 145, 108, 0.15) inset;
+            border-color: var(--mint);
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .main-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Layout Systems */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+            margin-bottom: 3rem;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Animated Divider */
+        .divider {
+            text-align: center;
+            margin: 3rem 0;
+            font-size: 1.5rem;
+            color: var(--mint);
+            filter: drop-shadow(0 0 15px rgba(64, 145, 108, 0.3));
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(10px);
+            }
+        }
+
+        /* Impact Section - New */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .impact-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(149, 213, 178, 0.1));
+            border: 2px solid var(--pale-green);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(82, 183, 136, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .impact-card:hover::before {
+            left: 100%;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 
+                0 20px 50px rgba(64, 145, 108, 0.2),
+                0 0 60px rgba(82, 183, 136, 0.1) inset;
+            border-color: var(--mint);
+        }
+
+        .impact-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 20px rgba(64, 145, 108, 0.4));
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .impact-value {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--forest);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 15px rgba(64, 145, 108, 0.2);
+        }
+
+        .impact-label {
+            font-size: 1rem;
+            color: var(--deep-forest);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(to bottom, transparent, rgba(149, 213, 178, 0.15));
+            border-top: 2px solid rgba(149, 213, 178, 0.3);
+            padding: 4rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at top, rgba(82, 183, 136, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .footer-logo {
+            font-family: 'Parisienne', cursive;
+            font-size: 3rem;
+            color: var(--forest);
+            margin-bottom: 1rem;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .footer-text {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--deep-forest);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            font-weight: 300;
+            font-size: 0.95rem;
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--mint), var(--light-green));
+            z-index: 1001;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px var(--mint);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .three-column {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .two-column, .three-column {
+                grid-template-columns: 1fr;
+            }
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 4rem;
+            }
+            .section-title {
+                font-size: 2.5rem;
+            }
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .logo {
+                font-size: 1.8rem;
+            }
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll Animations */
+        [data-scroll] {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-scroll].active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger animation for child elements */
+        [data-scroll].active .feature-box,
+        [data-scroll].active .info-box,
+        [data-scroll].active .impact-card {
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        [data-scroll].active .feature-box:nth-child(1),
+        [data-scroll].active .info-box:nth-child(1),
+        [data-scroll].active .impact-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        [data-scroll].active .feature-box:nth-child(2),
+        [data-scroll].active .info-box:nth-child(2),
+        [data-scroll].active .impact-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        [data-scroll].active .feature-box:nth-child(3),
+        [data-scroll].active .impact-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        [data-scroll].active .impact-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">AERO</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#location">Location</a></li>
+                <li><a href="#shelter">Shelter</a></li>
+                <li><a href="#energy">Energy</a></li>
+                <li><a href="#water">Water</a></li>
+                <li><a href="#food">Food</a></li>
+                <li><a href="#impact">Impact</a></li>
+                <li><a href="#sewage">Systems</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - TREE IMAGE FIRST -->
+    <section class="hero" id="home">
+        <div class="hero-slideshow">
+            <!-- TREE/FOREST IMAGE FIRST -->
+            <div class="hero-slide active" style="background-image: url('https://images.pexels.com/photos/1496373/pexels-photo-1496373.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/1089842/pexels-photo-1089842.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/1048039/pexels-photo-1048039.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/533671/pexels-photo-533671.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-subtitle">Sustainable Living Redefined</div>
+            <h1>AERO</h1>
+            <p class="hero-description">
+                Autonomous Earth-Responsive Oasis<br>
+                A fully self-sustaining Earthship in Georgetown, Guyana
+            </p>
+            <a href="#location" class="cta-button">Explore the Design</a>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number" data-count="100">0</div>
+                    <div class="stat-label">% Off-Grid</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" data-count="2500">0</div>
+                    <div class="stat-label">Square Feet</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" data-count="2">0</div>
+                    <div class="stat-label">Residents</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section class="section" id="location" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">01 / LOCATION</div>
+                <h2 class="section-title">Georgetown, Guyana</h2>
+                <p class="section-subtitle">
+                    Strategically positioned on the coastal plain to maximize solar exposure, 
+                    rainfall collection, and agricultural potential in a tropical climate. The location 
+                    is carefully selected to harness nature's abundance while minimizing environmental impact.
+                </p>
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Climate Advantages</h3>
+                    <p class="info-box-text">
+                        Georgetown's tropical rainforest climate (Köppen Af) provides extraordinary conditions 
+                        with consistent temperatures year-round, abundant rainfall distributed across two distinct 
+                        wet seasons, and reliable solar radiation. The near-equatorial location at 6.8°N latitude 
+                        ensures minimal seasonal variation in daylight hours and temperature, creating predictable 
+                        conditions ideal for sustainable living systems. Northeast trade winds provide natural 
+                        cooling and help maintain comfortable humidity levels throughout the year.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Average Temperature</div>
+                            <div class="data-value">26°C</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Annual Rainfall</div>
+                            <div class="data-value">2,200mm</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Solar Hours/Day</div>
+                            <div class="data-value">5.5hrs</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Humidity Range</div>
+                            <div class="data-value">75-85%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Wind Speed (Avg)</div>
+                            <div class="data-value">12 km/h</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Growing Days/Year</div>
+                            <div class="data-value">365</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-box-title">Strategic Location Benefits</h3>
+                    <p class="info-box-text">
+                        Positioned on Guyana's coastal plain at precisely 6.8°N latitude and 58.2°W longitude, 
+                        this site offers optimal solar access for energy generation while providing reliable water 
+                        sources and fertile alluvial soil deposited by centuries of river flow. The low elevation 
+                        (2 meters above sea level) allows for easy groundwater access as a backup system, while 
+                        proximity to Georgetown (15km) ensures access to emergency services and resources without 
+                        compromising off-grid independence. The coastal location provides cooling sea breezes while 
+                        maintaining distance from storm surge risk areas.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Latitude</div>
+                            <div class="data-value">6.8°N</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Longitude</div>
+                            <div class="data-value">58.2°W</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Elevation</div>
+                            <div class="data-value">2m</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Soil Type</div>
+                            <div class="data-value">Alluvial</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">pH Level</div>
+                            <div class="data-value">5.5-6.5</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Water Table Depth</div>
+                            <div class="data-value">3-5m</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">🌧️</div>
+                    <h3 class="feature-title">Water Abundance</h3>
+                    <p class="feature-text">
+                        Georgetown receives over 2,200mm of annual rainfall distributed across two pronounced 
+                        wet seasons (May-July and November-January), ensuring reliable water harvesting throughout 
+                        the year. The coastal location provides backup groundwater access at shallow depths (3-5m), 
+                        while the predictable rainfall patterns allow for precise cistern sizing. Consistent 
+                        precipitation maintains year-round cistern replenishment with a remarkable 372% surplus 
+                        capacity, providing exceptional resilience against drought periods and system maintenance 
+                        requirements.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">☀️</div>
+                    <h3 class="feature-title">Solar Potential</h3>
+                    <p class="feature-text">
+                        The near-equatorial position ensures remarkably consistent solar exposure throughout the 
+                        year with minimal seasonal variation—unlike temperate regions where winter solar production 
+                        drops dramatically. Average 5.5 peak sun hours daily provides reliable renewable energy 
+                        generation without the summer/winter fluctuations that complicate system design in higher 
+                        latitudes. Northeast trade winds cool solar panels naturally, improving efficiency by 
+                        reducing heat-related losses. The stable 12-hour day length year-round simplifies battery 
+                        sizing and energy management.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">🌱</div>
+                    <h3 class="feature-title">Fertile Growing Conditions</h3>
+                    <p class="feature-text">
+                        Rich alluvial soil deposited by rivers contains 5-8% organic content with excellent 
+                        drainage characteristics and natural fertility. The slightly acidic pH (5.5-6.5) is ideal 
+                        for most tropical crops including cassava, sweet potato, and a wide variety of vegetables. 
+                        Year-round warm temperatures (never below 20°C) enable continuous food production with 
+                        3-4 vegetable harvests annually—far exceeding temperate climate capabilities. The warm, 
+                        humid conditions accelerate composting to just 8-12 weeks versus 6-12 months in cooler 
+                        climates, rapidly converting waste into valuable soil amendments.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shelter -->
+    <section class="section" id="shelter" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">02 / SHELTER</div>
+                <h2 class="section-title">Sustainable Architecture</h2>
+                <p class="section-subtitle">
+                    2,500 sq ft thermal mass construction using 800 earth-rammed tires, 1,500+ recycled bottles, 
+                    and 2,000+ aluminum cans with passive climate control maintaining 20-24°C without mechanical 
+                    HVAC systems.
+                </p>
+            </div>
+
+            <div class="main-image">
+                <img src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1920&q=80" alt="Sustainable Earthship Building">
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Core Specifications</h3>
+                    <p class="info-box-text">
+                        The structure utilizes 800 automobile tires (each weighing approximately 10kg empty, 
+                        compacted to 3+ tons with earth) creating walls 2-3 feet thick. These massive walls 
+                        provide extraordinary thermal mass that absorbs heat during the day and releases it slowly 
+                        at night, maintaining stable interior temperatures. The U-shaped floor plan maximizes 
+                        natural ventilation while providing protection from prevailing winds. Elevated on a 
+                        concrete foundation to prevent flooding and improve airflow, the building incorporates 
+                        over 3,500 pieces of recycled material diverted from landfills.
+                    </p>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Total Square Footage</div>
+                            <div class="data-value">2,500 ft²</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Design Occupancy</div>
+                            <div class="data-value">2 People</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Earth-Rammed Tires</div>
+                            <div class="data-value">800</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Recycled Bottles</div>
+                            <div class="data-value">1,500+</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Aluminum Cans</div>
+                            <div class="data-value">2,000+</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Thermal Wall Thickness</div>
+                            <div class="data-value">2-3 ft</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Foundation Height</div>
+                            <div class="data-value">18 in</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Roof Overhang</div>
+                            <div class="data-value">4-5 ft</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-box-title">Design Philosophy & Performance</h3>
+                    <p class="info-box-text">
+                        The U-shaped floor plan wraps around an internal greenhouse, creating a protected 
+                        microclimate while maximizing natural cross-ventilation. Massive thermal walls (2-3 feet 
+                        thick) stabilize interior temperatures at a comfortable 20-24°C without any mechanical 
+                        heating or cooling systems—a remarkable achievement in a tropical climate where conventional 
+                        buildings require constant air conditioning. The elevated foundation (18 inches) prevents 
+                        flooding during heavy tropical rains while dramatically improving airflow beneath the 
+                        structure. North-facing windows (60% of north wall) capture prevailing northeast trade 
+                        winds for natural cooling while deep roof overhangs (4-5 feet) prevent direct sun penetration, 
+                        reducing heat gain. Clerestory windows near the ceiling create stack ventilation, exhausting 
+                        hot air naturally. The result: 6-8°C cooler than conventional construction with zero energy 
+                        consumption for climate control.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Interior Temperature</div>
+                            <div class="data-value">20-24°C</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">North Window Coverage</div>
+                            <div class="data-value">60%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Temp Reduction vs Conventional</div>
+                            <div class="data-value">6-8°C</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">HVAC Energy Use</div>
+                            <div class="data-value">0 kWh</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">🏗️</div>
+                    <h3 class="feature-title">Thermal Mass Engineering</h3>
+                    <p class="feature-text">
+                        800 earth-rammed tires (each compacted to over 3 tons) create unprecedented thermal mass 
+                        in walls 2-3 feet thick. This massive thermal battery absorbs heat during the day and 
+                        releases it slowly at night, damping temperature swings and maintaining a comfortable 
+                        20-24°C interior without any HVAC equipment. The thermal mass reduces peak interior 
+                        temperatures by 6-8°C compared to conventional construction, while the high heat capacity 
+                        creates a 6-8 hour thermal lag—meaning interior temperatures change slowly even as outside 
+                        conditions fluctuate. Each tire wall section has R-value equivalent to R-30 insulation when 
+                        combined with thermal mass effects, far exceeding building code requirements.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">🪟</div>
+                    <h3 class="feature-title">Passive Solar Design</h3>
+                    <p class="feature-text">
+                        Floor-to-ceiling windows span 60% of the north-facing wall, providing abundant natural 
+                        light while capturing prevailing northeast trade winds for natural ventilation. Deep roof 
+                        overhangs (4-5 feet) act as solar shields, preventing direct sun penetration during the 
+                        highest sun angles while still allowing natural light. Clerestory windows positioned near 
+                        the ceiling create powerful stack ventilation—hot air rises and exhausts naturally while 
+                        drawing cool air through lower windows. This passive system moves air without fans or 
+                        electricity. Strategic window placement creates cross-breezes that naturally cool the 
+                        interior, while operable windows allow residents to fine-tune ventilation based on conditions.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">♻️</div>
+                    <h3 class="feature-title">Recycled Materials Integration</h3>
+                    <p class="feature-text">
+                        Interior non-structural walls incorporate 1,500+ glass bottles and 2,000+ aluminum cans 
+                        set in concrete or adobe, creating beautiful translucent walls that filter natural light 
+                        while maintaining privacy. These recycled materials divert approximately 300 kg of waste 
+                        from landfills while providing thermal mass, sound insulation (reducing noise transmission 
+                        by 30-40%), and unique aesthetic character. Bottles are laid horizontally in mortar, creating 
+                        stunning light patterns as sunlight filters through colored glass. The aluminum cans, when 
+                        laid horizontally and filled with sawdust or sand, provide additional insulation value. 
+                        This approach proves that waste materials can become valuable building components, 
+                        challenging conventional construction paradigms.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Energy -->
+    <section class="section" id="energy" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">03 / ENERGY</div>
+                <h2 class="section-title">100% Renewable Power</h2>
+                <p class="section-subtitle">
+                    Advanced 6kW solar photovoltaic system generating 12,045 kWh annually with 37% surplus capacity, 
+                    paired with 48 kWh lithium battery storage providing 2 days of autonomy. Zero fossil fuel dependence.
+                </p>
+            </div>
+
+            <div class="main-image">
+                <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1920&q=80" alt="Solar Panel Array">
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Comprehensive Energy Budget</h3>
+                    <p class="info-box-text">
+                        Annual energy consumption of 8,760 kWh serves 2 residents in 2,500 sq ft with modern 
+                        amenities and zero compromise on comfort. The tropical climate eliminates heating entirely, 
+                        while passive design eliminates air conditioning—the two largest energy consumers in 
+                        conventional homes. All lighting utilizes LED technology (90% more efficient than 
+                        incandescent), while Energy Star appliances minimize consumption. The water pump for 
+                        cistern distribution represents a significant load, but remains far below conventional 
+                        municipal water system energy requirements. Smart load management and high-efficiency 
+                        appliances achieve 65% lower energy consumption than comparable conventional homes.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Annual Total Consumption</div>
+                            <div class="data-value">8,760 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Daily Average Use</div>
+                            <div class="data-value">24 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Kitchen Appliances</div>
+                            <div class="data-value">3,650 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Water Pump System</div>
+                            <div class="data-value">1,825 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">LED Lighting (All)</div>
+                            <div class="data-value">730 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Electronics & Backup</div>
+                            <div class="data-value">2,555 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">HVAC (Heating/Cooling)</div>
+                            <div class="data-value">0 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">vs. Conventional Home</div>
+                            <div class="data-value">-65%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-box-title">Solar PV System Design</h3>
+                    <p class="info-box-text">
+                        The 6kW array comprises 20 monocrystalline panels (300W each, 19.5% efficiency rating) 
+                        mounted at a shallow 7° tilt angle optimized for the 6.8°N latitude. This shallow angle 
+                        minimizes wind resistance during tropical storms while allowing rainwater to naturally 
+                        clean panels during downpours—eliminating maintenance washing. The system generates 
+                        approximately 33 kWh daily (12,045 kWh annually) with Georgetown's reliable 5.5 peak sun 
+                        hours, providing 37% surplus capacity to account for cloudy days, seasonal variation, and 
+                        gradual panel degradation. Aluminum racking on the metal roof includes 8-inch spacing for 
+                        airflow cooling underneath panels, improving efficiency. Micro-inverters on each panel 
+                        optimize output and provide panel-level monitoring, while the system includes comprehensive 
+                        lightning protection with surge arrestors protecting the substantial investment.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Total Array Capacity</div>
+                            <div class="data-value">6 kW</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Panel Configuration</div>
+                            <div class="data-value">20×300W</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Daily Generation</div>
+                            <div class="data-value">33 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Annual Production</div>
+                            <div class="data-value">12,045 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Battery Storage</div>
+                            <div class="data-value">48 kWh</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">System Autonomy</div>
+                            <div class="data-value">2 Days</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Panel Efficiency</div>
+                            <div class="data-value">19.5%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Surplus Capacity</div>
+                            <div class="data-value">37%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Advanced System Design</h3>
+                    <p class="feature-text">
+                        Panels mount on aluminum racking attached to the standing-seam metal roof with 8-inch 
+                        spacing underneath for critical airflow cooling—in tropical heat, cooling airflow can 
+                        improve panel efficiency by 5-10%. The shallow 7° tilt angle is specifically optimized 
+                        for 6.8°N latitude while providing two key benefits: minimal wind resistance during storms 
+                        and automatic panel cleaning during Georgetown's frequent heavy rains. Micro-inverters on 
+                        each panel (rather than a central inverter) optimize output when partial shading occurs, 
+                        provide panel-level monitoring for maintenance, and eliminate single points of failure. 
+                        Comprehensive lightning protection with surge arrestors on all circuits protects the system 
+                        in this tropical storm region. The monocrystalline panels carry a 25+ year warranty with 
+                        guaranteed 80% output retention—meaning after 25 years, panels will still produce 80% of 
+                        original capacity.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">🔋</div>
+                    <h3 class="feature-title">Energy Storage Technology</h3>
+                    <p class="feature-text">
+                        The 48 kWh lithium iron phosphate (LiFePO4) battery bank comprises four 12 kWh modules, 
+                        providing two days of complete autonomy without solar input—critical during tropical storms 
+                        or extended cloudy periods. LiFePO4 chemistry is specifically chosen for superior thermal 
+                        stability in tropical heat (unlike lithium-ion batteries that degrade rapidly above 30°C), 
+                        exceptional cycle life (6000+ cycles at 80% depth of discharge), and inherent safety (no 
+                        thermal runaway risk). The smart Battery Management System (BMS) maintains optimal 20-90% 
+                        charge window to maximize the 15+ year lifespan while monitoring cell temperatures, voltages, 
+                        and state of charge. Unlike lead-acid batteries requiring replacement every 3-5 years, 
+                        LiFePO4 technology provides 3x longer life with 95% round-trip efficiency versus 80% for 
+                        lead-acid—less energy lost in charging/discharging cycles.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Efficiency Optimization</h3>
+                    <p class="feature-text">
+                        Every light fixture utilizes LED technology providing 90 lumens per watt—90% more efficient 
+                        than incandescent bulbs while lasting 25x longer. Energy Star certified appliances throughout: 
+                        refrigerator consuming just 450 kWh annually (vs. 600-800 kWh for standard models), induction 
+                        cooktop operating at 90% efficiency (vs. 40% for gas, 75% for electric coil), front-load 
+                        washing machine using 150 kWh yearly (vs. 400 kWh for top-load). The induction cooktop alone 
+                        saves 50% energy compared to conventional cooking while heating water 25-50% faster. Smart 
+                        power strips eliminate phantom loads from devices in standby mode—typically 5-10% of home 
+                        energy use. The result: AERO consumes 65% less energy than comparable conventional homes while 
+                        maintaining superior comfort and functionality, demonstrating that sustainable living need not 
+                        sacrifice modern amenities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Water -->
+    <section class="section" id="water" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">04 / WATER</div>
+                <h2 class="section-title">Complete Water Independence</h2>
+                <p class="section-subtitle">
+                    Sophisticated rainwater harvesting system achieving 372% surplus capacity through 185m² 
+                    metal roof collection, 50,000L storage, advanced multi-stage filtration, and greywater 
+                    recycling—providing drinking-quality water without municipal connections.
+                </p>
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Comprehensive Water Budget</h3>
+                    <p class="info-box-text">
+                        Annual water needs of 109,500 liters serve 2 residents with indoor use (drinking, cooking, 
+                        bathing, laundry), greenhouse irrigation for food production, and landscape watering—all 
+                        without municipal water connections. Georgetown's exceptional 2,200mm annual rainfall exceeds 
+                        total needs by 3.7x, with distribution across two wet seasons ensuring year-round availability. 
+                        Water-efficient fixtures throughout reduce consumption by 40-50% compared to conventional 
+                        fixtures: low-flow showerheads (7.5L/min vs. 15L/min standard), dual-flush toilets (3L/6L 
+                        vs. 13L standard), aerator faucets (5L/min vs. 8L/min). The combination of abundant rainfall, 
+                        efficient fixtures, and sophisticated recycling creates a resilient water system with massive 
+                        surplus capacity—166 days of autonomy without any rainfall.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Annual Requirement</div>
+                            <div class="data-value">109,500 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Daily Average Use</div>
+                            <div class="data-value">300 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Indoor Consumption</div>
+                            <div class="data-value">54,750 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Greenhouse Irrigation</div>
+                            <div class="data-value">36,500 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Landscape Watering</div>
+                            <div class="data-value">18,250 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Per Person Daily</div>
+                            <div class="data-value">150 L</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-box-title">Collection & Storage System</h3>
+                    <p class="info-box-text">
+                        The 185 m² standing-seam metal roof captures approximately 407,000 liters annually with 
+                        90% collection efficiency (accounting for losses from evaporation, first-flush diversion, 
+                        and system maintenance). This massive 372% surplus provides exceptional resilience against 
+                        drought, system failures, or increased usage. Primary storage consists of a 40,000L 
+                        ferro-cement cistern buried underground where cool earth temperatures (20-22°C) naturally 
+                        inhibit bacterial growth and reduce chlorine requirements. A supplementary 10,000L polyethylene 
+                        reserve tank provides additional capacity and system redundancy. Combined storage of 50,000L 
+                        provides 166 days of complete autonomy without any rainfall—exceeding the longest recorded 
+                        dry period in Georgetown by 3x. The buried cistern design also protects water from 
+                        contamination, maintains cool temperatures, and survives tropical storms that might damage 
+                        above-ground tanks.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Collection Roof Area</div>
+                            <div class="data-value">185 m²</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Annual Capture</div>
+                            <div class="data-value">407,000 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Primary Cistern</div>
+                            <div class="data-value">40,000 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Reserve Tank</div>
+                            <div class="data-value">10,000 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Total Surplus</div>
+                            <div class="data-value">372%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Days Autonomy</div>
+                            <div class="data-value">166 Days</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">💧</div>
+                    <h3 class="feature-title">Advanced Collection System</h3>
+                    <p class="feature-text">
+                        Standing-seam metal roof with aluminum gutters and fine-mesh leaf guards prevents debris 
+                        entry while capturing rainfall efficiently. Sophisticated first-flush diverters automatically 
+                        discard the initial 20 liters per downspout—removing dust, pollen, and pollutants accumulated 
+                        on the roof between rains—before allowing clean water to enter cisterns. High-quality 50-micron 
+                        stainless steel screens provide secondary filtration before cistern entry, protecting the stored 
+                        water from contamination. The metal roof material is specifically chosen over asphalt shingles 
+                        because it doesn't leach chemicals, lasts 50+ years (vs. 15-20 for shingles), and provides a 
+                        cleaner collection surface. Gutter sizing handles Georgetown's intense tropical downpours 
+                        (up to 50mm/hour) without overflow—capturing nearly 4x annual needs even in heavy rain events.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">🔬</div>
+                    <h3 class="feature-title">Multi-Stage Filtration</h3>
+                    <p class="feature-text">
+                        Advanced 3-stage point-of-use treatment ensures drinking water quality exceeding WHO standards 
+                        and comparable to bottled water. Stage 1: 50-micron sediment filter removes particles, rust, 
+                        and visible contaminants (replaced quarterly). Stage 2: Activated carbon block filter removes 
+                        chlorine, volatile organic compounds (VOCs), chemicals, pesticides, and odors while improving 
+                        taste (replaced every 6 months). Stage 3: UV sterilization system delivers 40 mJ/cm² dosage 
+                        achieving 99.99% kill rate for bacteria, viruses, and protozoa including giardia and 
+                        cryptosporidium—without adding chemicals that affect taste (lamp replaced annually). This 
+                        comprehensive system produces water cleaner than most municipal supplies while avoiding the 
+                        plastic waste of bottled water—saving 3,000+ bottles annually.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">♻️</div>
+                    <h3 class="feature-title">Greywater Recycling</h3>
+                    <p class="feature-text">
+                        Greywater from sinks, showers, and laundry (225L daily, 75% of total indoor use) routes to 
+                        four botanical treatment cells (1,200L total capacity) rather than joining blackwater in the 
+                        septic system. Each 300L cell contains gravel substrate and water-loving plants (banana, canna, 
+                        papyrus, taro) whose extensive root systems and associated beneficial bacteria naturally filter 
+                        and purify water. The 5-7 day retention time through cascading cells achieves 85-95% BOD 
+                        (biological oxygen demand) reduction and removes 80-90% of nitrogen and phosphorus—transforming 
+                        greywater into irrigation-quality water safe for food crops. This natural treatment process 
+                        recycles 82,125L annually for greenhouse and garden irrigation, reducing freshwater demand by 
+                        43% while avoiding the energy-intensive processes of conventional wastewater treatment. The 
+                        botanical cells also create beautiful water gardens, demonstrating how wastewater treatment can 
+                        be both functional and aesthetic.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Food Production -->
+    <section class="section" id="food" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">05 / FOOD</div>
+                <h2 class="section-title">Year-Round Food Production</h2>
+                <p class="section-subtitle">
+                    Integrated 1,500 sq ft food production system combining climate-controlled greenhouse, 
+                    permaculture gardens, vertical growing systems, and aquaponics—generating 1,250 lbs annually 
+                    and meeting 60-70% of household dietary needs through continuous tropical growing cycles.
+                </p>
+            </div>
+
+            <div class="main-image">
+                <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=1920&q=80" alt="Greenhouse Interior with Plants">
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Production Capacity & Methods</h3>
+                    <p class="info-box-text">
+                        Georgetown's extraordinary tropical climate (consistent 26°C, 75-85% humidity, 12-hour days 
+                        year-round) enables continuous food production impossible in temperate regions. Leafy greens 
+                        mature in just 30-45 days allowing 8 successive crops annually versus 2-3 in temperate climates. 
+                        Tomatoes, peppers, and beans produce in 70-90 days enabling 4-5 crops yearly. Root vegetables 
+                        like cassava and sweet potato require 3-4 months but produce massive yields (10-15 lbs per plant). 
+                        Perennial trees (papaya, banana, plantain) fruit continuously once established. The 1,500 sq ft 
+                        integrated system combining greenhouse (500 sq ft), outdoor gardens (800 sq ft), and vertical/
+                        aquaponic systems (200 sq ft) generates 1,250 lbs total annual production—meeting 60-70% of 
+                        dietary needs for 2 people with complete self-sufficiency in fresh vegetables and partial 
+                        self-sufficiency in fruits and protein.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Indoor Greenhouse</div>
+                            <div class="data-value">500 ft²</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Outdoor Permaculture</div>
+                            <div class="data-value">800 ft²</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Vertical/Aquaponics</div>
+                            <div class="data-value">200 ft²</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Total Growing Space</div>
+                            <div class="data-value">1,500 ft²</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Annual Production</div>
+                            <div class="data-value">1,250 lbs</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Food Self-Sufficiency</div>
+                            <div class="data-value">60-70%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-box-title">Detailed Production Breakdown</h3>
+                    <p class="info-box-text">
+                        The integrated food system produces a diverse array of nutrient-dense foods across multiple 
+                        growing zones. Vegetables (1,000 lbs annually) provide complete self-sufficiency in fresh 
+                        produce including tomatoes, peppers, lettuce, cassava, sweet potato, okra, eggplant, beans, 
+                        and more—far exceeding the 400-600 lbs of vegetables typically consumed by 2 people annually. 
+                        Fruits (200 lbs) from papaya, banana, plantain, and passion fruit provide essential vitamins 
+                        and natural sweetness. Protein (50 lbs) from tilapia in the aquaponic system supplements 
+                        dietary needs. Herbs and spices grown year-round eliminate grocery purchases. The system 
+                        emphasizes nutrient-dense foods (leafy greens, peppers, tomatoes) over calorie crops, 
+                        complemented by purchased staples (rice, flour, cooking oil) that require extensive land to 
+                        produce. This strategy maximizes nutrition and freshness per square foot while maintaining 
+                        realistic production goals.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Vegetables (Total)</div>
+                            <div class="data-value">1,000 lbs</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Fruits (Total)</div>
+                            <div class="data-value">200 lbs</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Fish Protein</div>
+                            <div class="data-value">50 lbs</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Vegetable Self-Sufficiency</div>
+                            <div class="data-value">100%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Crops Harvested/Year</div>
+                            <div class="data-value">3-8×</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Growing Days/Year</div>
+                            <div class="data-value">365</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">🌿</div>
+                    <h3 class="feature-title">Climate-Controlled Greenhouse</h3>
+                    <p class="feature-text">
+                        The attached 500 sq ft greenhouse wraps around the U-shaped building core, creating a protected 
+                        microclimate for high-value crops requiring consistent conditions. Six raised beds (each 4×8 ft, 
+                        12 inches deep) filled with 70% compost and 30% native soil grow tomatoes (200 lbs/year from 
+                        20 plants), peppers (80 lbs from 15 plants), lettuce (120 lbs from successive 30-day plantings), 
+                        fresh herbs (30 lbs—basil, cilantro, parsley), cucumbers (100 lbs from 6 plants), and beans 
+                        (70 lbs). Greywater drip irrigation delivers nutrients while conserving water. LED grow lights 
+                        supplement natural sunlight during cloudy periods, ensuring consistent production. The 
+                        climate-controlled space extends growing seasons for temperature-sensitive crops while protecting 
+                        from heavy rains and pests. Screened vents provide ventilation while excluding insects. Total 
+                        production: 600 lbs annually from the most valuable space in the system.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">🥬</div>
+                    <h3 class="feature-title">Outdoor Permaculture System</h3>
+                    <p class="feature-text">
+                        The 800 sq ft outdoor garden implements permaculture principles organizing plants into productive 
+                        "guilds"—communities that support each other through nitrogen fixation, pest management, and 
+                        shade provision. Cassava (300 lbs from 15 plants—drought-tolerant staple), sweet potato (150 lbs—
+                        covers ground preventing weeds), okra (100 lbs—thrives in heat), eggplant (80 lbs), papaya 
+                        (150 lbs from 3 trees fruiting continuously), banana (120 lbs from 2 clumps), plantain (100 lbs—
+                        cooking bananas). Deep 4-inch wood chip mulch retains soil moisture during dry periods, suppresses 
+                        weeds, adds organic matter as it decomposes, and moderates soil temperature. Nitrogen-fixing 
+                        pigeon pea plants throughout provide free fertilizer. Diverse plantings confuse pests while 
+                        attracting beneficial insects. Zero-till methods preserve soil structure. Total: 1,000 lbs annually 
+                        from resilient tropical crops requiring minimal intervention once established.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">🌾</div>
+                    <h3 class="feature-title">Vertical & Aquaponic Systems</h3>
+                    <p class="feature-text">
+                        Vertical growing systems (200 sq ft) maximize production from limited space using tower gardens, 
+                        trellises, and walls—multiplying effective growing area 3-4x. Tower gardens grow lettuce, herbs, 
+                        strawberries, and spinach in stacked vertical columns. Sturdy trellises support climbing beans, 
+                        passion fruit vines, and small-fruited pumpkins. Wall-mounted containers grow herbs and trailing 
+                        plants. Total vertical production: 190 lbs annually. The integrated 300-gallon aquaponic system 
+                        raises 30 tilapia fish (50 lbs harvestable protein over 6-month cycles) while their nutrient-rich 
+                        waste water fertilizes growing beds producing additional leafy greens (70 lbs lettuce, bok choy, 
+                        kale). The closed-loop system uses 90% less water than soil gardening while producing both protein 
+                        and vegetables simultaneously—a remarkably efficient use of space and resources. Total combined 
+                        vertical/aquaponic: 260 lbs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Environmental Impact - NEW SECTION -->
+    <section class="section" id="impact" data-scroll style="background: linear-gradient(to bottom, var(--cream), rgba(149, 213, 178, 0.05));">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">06 / ENVIRONMENTAL IMPACT</div>
+                <h2 class="section-title">Measurable Sustainability</h2>
+                <p class="section-subtitle">
+                    AERO demonstrates radical environmental responsibility through complete fossil fuel independence, 
+                    zero carbon emissions, minimal waste generation, and positive ecological impacts—achieving 
+                    sustainability metrics that exceed conventional buildings by orders of magnitude.
+                </p>
+            </div>
+
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-icon">🌍</div>
+                    <div class="impact-value">0</div>
+                    <div class="impact-label">Carbon Emissions<br>(tons CO₂/year)</div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-icon">💡</div>
+                    <div class="impact-value">12,045</div>
+                    <div class="impact-label">Renewable Energy<br>Generated (kWh/year)</div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-icon">💧</div>
+                    <div class="impact-value">407,000</div>
+                    <div class="impact-label">Rainwater Harvested<br>(liters/year)</div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-icon">🌱</div>
+                    <div class="impact-value">1,250</div>
+                    <div class="impact-label">Food Produced<br>(pounds/year)</div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-icon">♻️</div>
+                    <div class="impact-value">95%</div>
+                    <div class="impact-label">Waste Diverted<br>from Landfills</div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-icon">🚫</div>
+                    <div class="impact-value">0</div>
+                    <div class="impact-label">Municipal Utility<br>Connections</div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-icon">🌡️</div>
+                    <div class="impact-value">0</div>
+                    <div class="impact-label">HVAC Energy<br>(kWh/year)</div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-icon">💰</div>
+                    <div class="impact-value">$3,500</div>
+                    <div class="impact-label">Annual Savings<br>vs. Conventional</div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+
+            <div class="two-column" style="margin-top: 3rem;">
+                <div class="info-box">
+                    <h3 class="info-box-title">Carbon Footprint Comparison</h3>
+                    <p class="info-box-text">
+                        AERO achieves true carbon neutrality—not through offsetting or credits, but through absolute 
+                        zero fossil fuel consumption. Conventional comparable homes emit 8-12 tons CO₂ annually from 
+                        electricity (4-6 tons), natural gas heating (2-4 tons), and water treatment/transportation 
+                        (1-2 tons). AERO's solar power, passive heating/cooling, rainwater harvesting, and on-site 
+                        food production eliminate these emissions entirely. Over 25 years, AERO prevents 200-300 tons 
+                        CO₂ emissions—equivalent to removing 50 cars from roads for a year, planting 10,000 trees, or 
+                        avoiding 500,000 miles of driving. The embodied carbon in recycled construction materials 
+                        (tires, bottles, cans) is recovered from waste streams rather than adding new manufacturing 
+                        emissions.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">AERO Annual Emissions</div>
+                            <div class="data-value">0 tons</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Conventional Home</div>
+                            <div class="data-value">10 tons</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">25-Year Prevention</div>
+                            <div class="data-value">250 tons</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Equivalent Cars Removed</div>
+                            <div class="data-value">60</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-box-title">Resource Conservation</h3>
+                    <p class="info-box-text">
+                        Beyond zero emissions, AERO demonstrates radical resource efficiency. Water consumption of 
+                        150L/person/day is 60% below U.S. average (250L) and 40% below European standards (180L)—
+                        achieved through efficient fixtures, greywater recycling, and behavioral awareness. Energy use 
+                        of 12 kWh/day/person is 70% below U.S. average (40 kWh) despite modern appliances and 
+                        electronics. The 60-70% food self-sufficiency eliminates transportation emissions, packaging 
+                        waste, and industrial agriculture impacts for majority of diet. Construction materials diverted 
+                        3,500+ items (800 tires, 1,500 bottles, 2,000 cans) from landfills—approximately 5 tons of 
+                        waste transformed into valuable building components. Over the building's 50+ year lifespan, 
+                        resource savings multiply: 20+ million liters of municipal water, 400,000+ kWh of grid 
+                        electricity, and 30+ tons of food production.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Water Use vs. Average</div>
+                            <div class="data-value">-60%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Energy Use vs. Average</div>
+                            <div class="data-value">-70%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Recycled Building Materials</div>
+                            <div class="data-value">5 tons</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">50-Year Water Savings</div>
+                            <div class="data-value">20M L</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sewage & Waste Combined -->
+    <section class="section" id="sewage" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">07 / INTEGRATED SYSTEMS</div>
+                <h2 class="section-title">Closed-Loop Resource Management</h2>
+                <p class="section-subtitle">
+                    Sophisticated wastewater treatment through botanical filtration and zero-waste management 
+                    achieving 95% landfill diversion—transforming potential pollutants into valuable resources 
+                    through natural biological processes and circular economy principles.
+                </p>
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Botanical Wastewater Treatment</h3>
+                    <p class="info-box-text">
+                        The dual-stream wastewater system intelligently separates greywater (75% from sinks, showers, 
+                        laundry—225L daily) from blackwater (25% from toilets—75L daily), allowing each stream to 
+                        receive appropriate treatment. Greywater routes to four cascading botanical treatment cells 
+                        (1,200L total, 300L each) planted with water-loving tropicals: banana, papyrus, canna lily, 
+                        and taro. These plants' extensive root systems provide enormous surface area for beneficial 
+                        bacteria colonization. As water slowly flows through gravel substrate (5-7 day retention), 
+                        bacterial communities break down organic matter, absorb nutrients (nitrogen, phosphorus), and 
+                        remove contaminants—achieving remarkable 85-95% BOD reduction, 80-90% nitrogen removal, and 
+                        80-95% phosphorus capture. The purified water exits safe for irrigating food crops, closing 
+                        the water loop while the plants thrive on nutrients they extract—producing beauty from waste.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Daily Wastewater</div>
+                            <div class="data-value">300 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Greywater (75%)</div>
+                            <div class="data-value">225 L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Treatment Cells</div>
+                            <div class="data-value">4×300L</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Retention Time</div>
+                            <div class="data-value">5-7 days</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">BOD Reduction</div>
+                            <div class="data-value">85-95%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Water Recycled/Year</div>
+                            <div class="data-value">82,125 L</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-box-title">Zero-Waste Management</h3>
+                    <p class="info-box-text">
+                        AERO's sophisticated waste management achieves 95% landfill diversion—far exceeding the 35% 
+                        U.S. national average and 50% European targets. A three-bin composting system processes all 
+                        organic waste: kitchen scraps (vegetable peels, coffee grounds, eggshells—200 kg/year), yard 
+                        waste (grass clippings, prunings—150 kg/year), and paper products (cardboard, paper—50 kg/year). 
+                        The tropical climate's warmth and humidity accelerate decomposition to 8-12 weeks versus 6-12 
+                        months in cooler regions. The resulting 200 kg of rich compost annually returns nutrients to 
+                        gardens, completing the nutrient cycle. Glass bottles and aluminum cans generated are integrated 
+                        into construction projects or recycled. Bulk food purchasing eliminates 100+ packages annually. 
+                        Home food production dramatically reduces packaging. Result: only 50 kg annually (0.96 kg weekly) 
+                        reaches landfills—5% of the 1,000 kg typical household waste—while saving $450 in garbage fees.
+                    </p>
+                    
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Annual Waste Generated</div>
+                            <div class="data-value">1,000 kg</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Composted Organics</div>
+                            <div class="data-value">400 kg</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Recycled Materials</div>
+                            <div class="data-value">550 kg</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">To Landfill</div>
+                            <div class="data-value">50 kg</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Diversion Rate</div>
+                            <div class="data-value">95%</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Compost Produced</div>
+                            <div class="data-value">200 kg</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">🌱</div>
+                    <h3 class="feature-title">Living Filtration System</h3>
+                    <p class="feature-text">
+                        The cascading 4-cell botanical treatment system harnesses powerful natural purification 
+                        processes. Each 300L cell contains 18 inches of gravel substrate providing enormous surface 
+                        area for beneficial bacteria colonization—approximately 2 million bacteria per cubic centimeter. 
+                        These microscopic workers break down organic compounds, while plant roots absorb nutrients and 
+                        oxygenate the water. Water-loving plants chosen for vigorous growth and nutrient uptake: banana 
+                        (nitrogen), papyrus (phosphorus), canna lily (heavy metals), taro (general nutrients). The 
+                        gravity-fed cascade requires zero energy while treating water to irrigation standards. Plants 
+                        thrive on extracted nutrients, producing lush growth and flowers—proof that one system's waste 
+                        is another's resource. After 5-7 days through gravel and root zones, water emerges clear and 
+                        safe for vegetable irrigation, completing a beautiful closed loop where nothing is wasted.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">🚽</div>
+                    <h3 class="feature-title">Blackwater Treatment</h3>
+                    <p class="feature-text">
+                        Blackwater from toilets (75L daily, 25% of total wastewater) receives conventional septic 
+                        treatment through a robust 1,500L two-chamber concrete tank. The first chamber provides primary 
+                        settlement where solids separate and begin anaerobic digestion—beneficial bacteria breaking down 
+                        organic matter without oxygen, generating biogas (mostly methane) that vents safely. The second 
+                        chamber provides additional settling and clarification. Clarified effluent then flows to a 
+                        200 sq ft subsurface leach field where soil bacteria complete treatment through aerobic 
+                        decomposition. The system requires pumping every 3-5 years to remove accumulated solids. 
+                        Alternative option: composting toilets eliminate blackwater entirely while producing valuable 
+                        compost, saving 27,375L water annually and eliminating septic maintenance—but requiring active 
+                        management. Both approaches successfully manage human waste without environmental contamination.
+                    </p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">♻️</div>
+                    <h3 class="feature-title">Circular Economy</h3>
+                    <p class="feature-text">
+                        AERO embodies circular economy principles where resources cycle continuously rather than flowing 
+                        linearly from extraction to landfill. Three-bin composting transforms 400 kg organic "waste" 
+                        into 200 kg nutrient-rich soil amendment—returning carbon, nitrogen, phosphorus to gardens where 
+                        it grows food. Kitchen scraps become compost, compost grows vegetables, vegetable scraps return 
+                        to compost—a perfect circle. Glass bottles and aluminum cans integrate into walls or recycle into 
+                        new products. Greywater nourishes botanical cells which purify it for irrigation which grows food 
+                        which generates more greywater. Food production on-site eliminates packaging that would become 
+                        waste. Bulk purchasing reduces packaging 80%. The result: 95% diversion (versus 35% national 
+                        average), only 50 kg landfill annually, $450 yearly savings in garbage fees, and demonstration 
+                        that "waste" is a design flaw—resources simply misplaced in linear systems.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="waste">
+        <div class="footer-content">
+            <div class="footer-logo">AERO</div>
+            <p class="footer-text">
+                Autonomous Earth-Responsive Oasis<br>
+                Proving sustainable living is not just possible—it's inevitable.<br>
+                <strong>Georgetown, Guyana</strong>
+            </p>
+            <p class="footer-text" style="margin-top: 2rem; font-size: 1rem; opacity: 0.8;">
+                🌿 100% Off-Grid • 0 Carbon Emissions • 95% Waste Diversion 🌿
+            </p>
+            <p class="footer-text" style="margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.6;">
+                © 2026 AERO Project. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // HERO SLIDESHOW - CHANGED TO 2 SECONDS (2000ms)
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const totalSlides = slides.length;
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % totalSlides;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // Change slide every 2 seconds (was 5 seconds)
+        setInterval(nextSlide, 2000);
+
+        // ANIMATED COUNTER FOR STATS
+        function animateCounter(element, target, duration = 2000) {
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        // Trigger counters on page load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.stat-number[data-count]').forEach(el => {
+                const target = parseInt(el.getAttribute('data-count'));
+                setTimeout(() => animateCounter(el, target), 500);
+            });
+        });
+
+        // SCROLL PROGRESS BAR
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            scrollProgress.style.width = scrolled + '%';
+        });
+
+        // NAVBAR SCROLL EFFECT
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // FLOATING PARTICLES
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // SMOOTH SCROLL
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 100;
+                    window.scrollTo({ 
+                        top: offsetTop, 
+                        behavior: 'smooth' 
+                    });
+                }
+            });
+        });
+
+        // SCROLL ANIMATIONS WITH INTERSECTION OBSERVER
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // Animate impact values when they come into view
+                    if (entry.target.querySelector('.impact-value')) {
+                        entry.target.querySelectorAll('.impact-value').forEach(el => {
+                            const text = el.textContent;
+                            const hasNumber = text.match(/\d+/);
+                            if (hasNumber) {
+                                const target = parseInt(text.replace(/,/g, ''));
+                                if (!el.classList.contains('counted')) {
+                                    el.classList.add('counted');
+                                    animateCounter(el, target, 2000);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe all scroll-animated elements
+        document.querySelectorAll('[data-scroll]').forEach(el => {
+            observer.observe(el);
+        });
+
+        // PARALLAX EFFECT FOR IMAGES
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            document.querySelectorAll('.main-image img').forEach(img => {
+                const speed = 0.5;
+                img.style.transform = `translateY(${scrolled * speed * 0.1}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
