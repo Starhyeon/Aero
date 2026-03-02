@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AERO | Autonomous Earth-Responsive Oasis</title>
+    <meta name="description" content="AERO — A fully self-sustaining Earthship in Georgetown, Guyana. 100% off-grid, zero carbon." />
+    <meta property="og:title" content="AERO | Autonomous Earth-Responsive Oasis" />
+    <meta property="og:description" content="Autonomous Earth-Responsive Oasis — 100% off-grid sustainable living." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cinzel:wght@400;600;700;900&family=Quicksand:wght@300;400;500;600;700&family=Montserrat:wght@300;400;600;700&family=Parisienne&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --deep-forest: #1b4332; --forest: #2d6a4f; --green: #40916c;
+            --mint: #52b788; --light-green: #74c69d; --pale-green: #95d5b2;
+            --cream: #f8f9fa; --sand: #e9ecef; --transition: 0.3s ease;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Quicksand', sans-serif; background: var(--cream); color: var(--deep-forest); overflow-x: hidden; }
+
+        /* ===== PAGE LOADER ===== */
+        .page-loader { position: fixed; inset: 0; z-index: 99999; background: var(--cream); display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.6s ease, visibility 0.6s ease; }
+        .page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .loader-leaf { font-size: 3rem; animation: leafSpin 1.2s ease-in-out infinite; }
+        @keyframes leafSpin { 0% { transform: rotate(0) scale(1); } 50% { transform: rotate(180deg) scale(1.15); } 100% { transform: rotate(360deg) scale(1); } }
+        .loader-text { font-family: 'Parisienne', cursive; font-size: 1.8rem; color: var(--forest); margin-top: 1rem; }
+
+        /* ===== SKIP NAV ===== */
+        .skip-nav { position: absolute; top: -50px; left: 16px; z-index: 10000; padding: 8px 16px; background: var(--forest); color: #fff; border-radius: 0 0 8px 8px; font-size: 0.85rem; text-decoration: none; transition: top 0.3s ease; }
+        .skip-nav:focus { top: 0; }
+
+        /* ===== SCROLL PROGRESS ===== */
+        .scroll-progress { position: fixed; top: 0; left: 0; width: 0; height: 3px; background: linear-gradient(90deg, var(--mint), var(--light-green), var(--pale-green)); z-index: 1001; box-shadow: 0 0 10px var(--mint); will-change: width; }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top { position: fixed; bottom: 24px; right: 24px; z-index: 900; width: 48px; height: 48px; border-radius: 50%; background: var(--forest); color: #fff; border: 2px solid var(--mint); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(20px); pointer-events: none; transition: all 0.4s ease; box-shadow: 0 4px 20px rgba(27,67,50,0.3); }
+        .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { background: var(--mint); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(82,183,136,0.4); }
+
+        /* ===== SECTION DOTS ===== */
+        .section-dots { position: fixed; right: 16px; top: 50%; transform: translateY(-50%); z-index: 800; display: flex; flex-direction: column; gap: 10px; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        .section-dots.show { opacity: 1; pointer-events: auto; }
+        .section-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pale-green); border: none; cursor: pointer; transition: all var(--transition); position: relative; padding: 0; }
+        .section-dot.active { background: var(--mint); transform: scale(1.4); box-shadow: 0 0 10px rgba(82,183,136,0.4); }
+        .section-dot .dot-label { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); background: var(--deep-forest); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .section-dot:hover .dot-label { opacity: 1; }
+
+        /* ===== HAMBURGER MENU ===== */
+        .hamburger { display: none; background: none; border: none; cursor: pointer; width: 32px; height: 24px; position: relative; z-index: 1001; }
+        .hamburger span { display: block; width: 100%; height: 2px; background: var(--deep-forest); position: absolute; left: 0; transition: all 0.3s ease; border-radius: 2px; }
+        .hamburger span:nth-child(1) { top: 0; }
+        .hamburger span:nth-child(2) { top: 11px; }
+        .hamburger span:nth-child(3) { bottom: 0; }
+        .hamburger.open span:nth-child(1) { top: 11px; transform: rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { bottom: 11px; transform: rotate(-45deg); }
+
+        /* ===== KEYBOARD SHORTCUTS OVERLAY ===== */
+        .shortcuts-overlay { position: fixed; inset: 0; z-index: 9998; background: rgba(27,67,50,0.92); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .shortcuts-overlay.open { opacity: 1; pointer-events: auto; }
+        .shortcuts-box { background: var(--cream); border-radius: 20px; padding: 2.5rem; max-width: 480px; width: 90%; }
+        .shortcuts-box h3 { font-family: 'Cinzel', serif; color: var(--forest); margin-bottom: 1.2rem; font-size: 1.3rem; }
+        .shortcut-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(149,213,178,0.2); }
+        .shortcut-key { display: inline-block; background: var(--sand); border: 1px solid var(--pale-green); padding: 2px 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; font-weight: 700; color: var(--forest); }
+
+        /* ===== LIGHTBOX ===== */
+        .lightbox-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.92); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; cursor: zoom-out; }
+        .lightbox-overlay.open { opacity: 1; pointer-events: auto; }
+        .lightbox-overlay img { max-width: 90vw; max-height: 85vh; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.92); transition: transform 0.3s ease; }
+        .lightbox-overlay.open img { transform: scale(1); }
+        .lightbox-close { position: absolute; top: 20px; right: 24px; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.15); border: none; color: #fff; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* ===== TOAST ===== */
+        .toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 960; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+        .toast { padding: 12px 24px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.2); pointer-events: auto; opacity: 0; transform: translateY(20px); animation: toastIn 0.4s ease forwards; background: var(--forest); color: #fff; }
+        @keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== FILM GRAIN ===== */
+        .grain-overlay { position: fixed; inset: 0; z-index: 9996; pointer-events: none; opacity: 0.015; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-repeat: repeat; }
+
+        /* ===== SPOTLIGHT CURSOR ===== */
+        .cursor-spotlight { position: fixed; pointer-events: none; z-index: 9995; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(82,183,136,0.04) 0%, transparent 70%); transform: translate(-50%, -50%); transition: opacity 0.3s ease; opacity: 0; }
+        .cursor-spotlight.active { opacity: 1; }
+
+        /* ===== PARTICLES ===== */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+        .particle { position: absolute; width: 8px; height: 8px; background: radial-gradient(circle, rgba(82, 183, 136, 0.6), transparent); border-radius: 50%; animation: float 15s infinite ease-in-out; opacity: 0; }
+        @keyframes float { 0%, 100% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(-100px) translateX(100px) rotate(360deg); opacity: 0; } }
+
+        /* ===== NAVIGATION ===== */
+        nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1rem 0; background: rgba(248, 249, 250, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(64, 145, 108, 0.2); box-shadow: 0 2px 20px rgba(27, 67, 50, 0.05); transition: all 0.35s ease; }
+        nav.scrolled { padding: 0.5rem 0; background: rgba(248, 249, 250, 0.98); box-shadow: 0 4px 30px rgba(27, 67, 50, 0.1); }
+        nav.nav-hidden { transform: translateY(-100%); }
+        .nav-container { max-width: 1600px; margin: 0 auto; padding: 0 3rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Parisienne', cursive; font-size: 2.2rem; color: var(--forest); letter-spacing: 1px; transition: all 0.3s ease; text-shadow: 0 2px 10px rgba(82, 183, 136, 0.2); }
+        .logo:hover { transform: scale(1.05); text-shadow: 0 4px 20px rgba(82, 183, 136, 0.4); }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { color: var(--deep-forest); text-decoration: none; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; position: relative; transition: all 0.3s ease; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--mint); transition: width 0.3s ease; box-shadow: 0 0 10px var(--mint); }
+        .nav-links a:hover { color: var(--green); transform: translateY(-2px); }
+        .nav-links a:hover::after { width: 100%; }
+        *:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; border-radius: 4px; }
+
+        /* ===== HERO ===== */
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .hero-slideshow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .hero-slide { position: absolute; background-color: var(--deep-forest); will-change: opacity; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 2s ease-in-out; background-size: cover; background-position: center;   }
+        @keyframes zoomOut { 0% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .hero-slide.active { opacity: 1; }
+        .hero-slide::before { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(27, 67, 50, 0.3), rgba(27, 67, 50, 0.5)); }
+        .hero::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at 30% 20%, rgba(82, 183, 136, 0.1) 0%, transparent 40%), radial-gradient(ellipse at 70% 80%, rgba(64, 145, 108, 0.1) 0%, transparent 40%); animation: lightRays 20s ease-in-out infinite; pointer-events: none; }
+        @keyframes lightRays { 0%, 100% { transform: rotate(0deg); opacity: 0.5; } 50% { transform: rotate(10deg); opacity: 0.8; } }
+        .hero-content { text-align: center; max-width: 1000px; position: relative; z-index: 1; padding: 2rem; animation: fadeInUp 1.5s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-subtitle { font-family: 'Italiana', serif; font-size: 1rem; letter-spacing: 5px; color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); animation: fadeIn 2s ease-out 0.5s both; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .hero h1 { font-family: 'Parisienne', cursive; font-size: 7rem; margin-bottom: 1.5rem; color: white; text-shadow: 0 0 40px rgba(82, 183, 136, 0.6), 0 4px 20px rgba(0, 0, 0, 0.7); line-height: 1; animation: glow 3s ease-in-out infinite; }
+        @keyframes glow { 0%, 100% { text-shadow: 0 0 40px rgba(82, 183, 136, 0.6), 0 4px 20px rgba(0, 0, 0, 0.7); } 50% { text-shadow: 0 0 60px rgba(82, 183, 136, 0.9), 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 80px rgba(82, 183, 136, 0.5); } }
+        .hero-description { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: white; margin-bottom: 2.5rem; line-height: 1.8; font-weight: 300; text-shadow: 0 2px 15px rgba(0, 0, 0, 0.7); animation: fadeIn 2s ease-out 1s both; }
+        .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 3.5rem; animation: fadeIn 2s ease-out 1.5s both; }
+        .stat { text-align: center; padding: 1.8rem 2.2rem; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(82, 183, 136, 0.2) inset; transition: all 0.4s ease; min-width: 140px; }
+        .stat:hover { transform: translateY(-8px) scale(1.05); background: rgba(255, 255, 255, 0.25); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 80px rgba(82, 183, 136, 0.3) inset; border-color: rgba(255, 255, 255, 0.5); }
+        .stat-number { font-family: 'Cinzel', serif; font-size: 2.8rem; font-weight: 700; color: white; text-shadow: 0 0 30px rgba(82, 183, 136, 0.8); margin-bottom: 0.4rem; }
+        .stat-label { font-size: 0.8rem; color: rgba(255, 255, 255, 0.9); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+        .cta-button { display: inline-block; padding: 1.1rem 3.2rem; background: rgba(64, 145, 108, 0.9); color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; letter-spacing: 2px; text-transform: uppercase; border-radius: 50px; transition: all 0.4s ease; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(82, 183, 136, 0.3) inset; border: 2px solid rgba(255, 255, 255, 0.3); position: relative; overflow: hidden; }
+        .cta-button::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255, 255, 255, 0.2); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
+        .cta-button:hover::before { width: 300px; height: 300px; }
+        .cta-button:hover { transform: translateY(-4px); background: rgba(82, 183, 136, 0.9); box-shadow: 0 15px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(82, 183, 136, 0.5) inset; }
+
+        /* ===== SECTIONS ===== */
+        .section { padding: 5rem 2rem; position: relative; }
+        .section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--pale-green), transparent); opacity: 0.3; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-number { font-family: 'Italiana', serif; font-size: 0.9rem; letter-spacing: 3px; color: var(--mint); margin-bottom: 0.8rem; text-transform: uppercase; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+        .section-title { font-family: 'Cinzel', serif; font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--forest); position: relative; display: inline-block; }
+        .section-title::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--mint), transparent); transition: width 0.6s ease; }
+        .section-header:hover .section-title::after { width: 100%; }
+        .section-subtitle { font-family: 'Montserrat', sans-serif; font-size: 1rem; color: var(--deep-forest); max-width: 700px; margin: 0 auto; line-height: 1.7; font-weight: 300; }
+
+        /* ===== INFO/FEATURE BOXES ===== */
+        .info-box { background: rgba(255, 255, 255, 0.9); border: 2px solid var(--pale-green); border-radius: 20px; padding: 2rem; position: relative; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(64, 145, 108, 0.08), 0 0 40px rgba(64, 145, 108, 0.04) inset; overflow: hidden; will-change: transform; }
+        .info-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(82, 183, 136, 0.1) 0%, transparent 70%); opacity: 0; transition: opacity 0.5s ease; }
+        .info-box:hover::before { opacity: 1; animation: rotate 10s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .info-box:hover { transform: translateY(-8px); box-shadow: 0 15px 45px rgba(64, 145, 108, 0.2), 0 0 60px rgba(64, 145, 108, 0.1) inset; border-color: var(--mint); }
+        .info-box-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 600; margin-bottom: 1rem; color: var(--forest); position: relative; z-index: 1; }
+        .info-box-text { font-size: 0.95rem; color: var(--deep-forest); line-height: 1.7; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .feature-box { background: rgba(255, 255, 255, 0.85); border: 2px solid var(--sand); border-radius: 18px; padding: 2rem; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(64, 145, 108, 0.06); position: relative; overflow: hidden; will-change: transform; }
+        .feature-box::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(82, 183, 136, 0.1), transparent); transition: left 0.5s ease; }
+        .feature-box:hover::after { left: 100%; }
+        .feature-box:hover { transform: translateY(-8px) scale(1.02); border-color: var(--mint); box-shadow: 0 12px 40px rgba(64, 145, 108, 0.18), 0 0 30px rgba(64, 145, 108, 0.08) inset; }
+        .feature-icon { font-size: 2.8rem; margin-bottom: 1rem; display: block; filter: drop-shadow(0 0 15px rgba(64, 145, 108, 0.3)); transition: all 0.3s ease; position: relative; z-index: 1; }
+        .feature-box:hover .feature-icon { transform: scale(1.1) rotateZ(5deg); filter: drop-shadow(0 0 25px rgba(64, 145, 108, 0.5)); }
+        .feature-title { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 0.8rem; color: var(--forest); position: relative; z-index: 1; }
+        .feature-text { font-size: 0.9rem; color: var(--deep-forest); line-height: 1.7; position: relative; z-index: 1; }
+
+        /* ===== DATA GRID ===== */
+        .data-grid { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; }
+        .data-item { display: flex; justify-content: space-between; align-items: center; background: rgba(149, 213, 178, 0.08); padding: 1rem 1.5rem; border-radius: 8px; border: 1px solid rgba(149, 213, 178, 0.3); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .data-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 3px; background: var(--mint); transform: scaleY(0); transition: transform 0.3s ease; }
+        .data-item:hover::before { transform: scaleY(1); }
+        .data-item:hover { background: rgba(149, 213, 178, 0.15); border-color: var(--mint); transform: translateX(8px); box-shadow: 0 4px 15px rgba(64, 145, 108, 0.15); }
+        .data-label { font-size: 0.9rem; color: var(--forest); font-weight: 500; text-align: left; }
+        .data-value { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; color: var(--mint); text-align: right; text-shadow: 0 2px 10px rgba(82, 183, 136, 0.3); }
+
+        /* ===== PROGRESS BARS ===== */
+        .data-bar-item { margin-bottom: 16px; }
+        .data-bar-label { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; color: var(--forest); font-weight: 500; }
+        .data-bar-label span { color: var(--mint); font-weight: 700; font-family: 'Cinzel', serif; }
+        .data-bar-track { width: 100%; height: 10px; background: rgba(149,213,178,0.15); border-radius: 5px; overflow: hidden; }
+        .data-bar-fill { height: 100%; width: 0%; border-radius: 5px; background: linear-gradient(90deg, var(--forest), var(--mint)); transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+        .data-bar-fill.animated { width: var(--bar-width); }
+
+        /* ===== IMAGES ===== */
+        .main-image { background: var(--sand); width: 100%; height: 500px; border-radius: 25px; overflow: hidden; border: 3px solid var(--pale-green); box-shadow: 0 10px 40px rgba(64, 145, 108, 0.12), 0 0 50px rgba(64, 145, 108, 0.08) inset; margin: 3rem 0; position: relative; transition: all 0.5s ease; cursor: zoom-in; }
+        .main-image:hover { transform: scale(1.02); box-shadow: 0 20px 60px rgba(64, 145, 108, 0.2), 0 0 80px rgba(64, 145, 108, 0.15) inset; border-color: var(--mint); }
+        .main-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+        .main-image:hover img { transform: scale(1.05); }
+
+        /* ===== LAYOUTS ===== */
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; margin-bottom: 3rem; }
+        .three-column { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2rem; }
+        .divider { text-align: center; margin: 3rem 0; font-size: 1.5rem; color: var(--mint); filter: drop-shadow(0 0 15px rgba(64, 145, 108, 0.3)); animation: sway 3s ease-in-out infinite; }
+        @keyframes sway { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+
+        /* ===== IMPACT ===== */
+        .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .impact-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(149, 213, 178, 0.1)); border: 2px solid var(--pale-green); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .impact-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(82, 183, 136, 0.2), transparent); transition: left 0.6s ease; }
+        .impact-card:hover::before { left: 100%; }
+        .impact-card:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 20px 50px rgba(64, 145, 108, 0.2), 0 0 60px rgba(82, 183, 136, 0.1) inset; border-color: var(--mint); }
+        .impact-icon { font-size: 3.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 20px rgba(64, 145, 108, 0.4)); animation: bounce 2s ease-in-out infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .impact-value { font-family: 'Cinzel', serif; font-size: 3rem; font-weight: 700; color: var(--forest); margin-bottom: 0.5rem; text-shadow: 0 2px 15px rgba(64, 145, 108, 0.2); }
+        .impact-label { font-size: 1rem; color: var(--deep-forest); font-weight: 500; line-height: 1.5; }
+
+        /* ===== COMPARISON TABLE ===== */
+        .compare-table-wrap { overflow-x: auto; margin: 28px 0; border-radius: 16px; }
+        .compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 600px; }
+        .compare-table th { background: var(--forest); color: #fff; padding: 14px 18px; text-align: left; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1px; }
+        .compare-table td { padding: 12px 18px; border-bottom: 1px solid rgba(149,213,178,0.2); }
+        .compare-table tr:hover td { background: rgba(149,213,178,0.06); }
+        .compare-table .aero-val { color: var(--mint); font-weight: 700; font-family: 'Cinzel', serif; }
+        .compare-table .conv-val { color: #999; }
+
+        /* ===== CARBON CALCULATOR ===== */
+        .calculator-box { background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(149,213,178,0.08)); border: 2px solid var(--pale-green); border-radius: 20px; padding: 2rem; margin-top: 2rem; }
+        .calc-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+        .calc-row label { font-size: 0.88rem; font-weight: 500; color: var(--forest); flex: 1; min-width: 140px; }
+        .calc-row input[type="range"] { flex: 1; min-width: 120px; accent-color: var(--mint); }
+        .calc-row .calc-val { font-family: 'Cinzel', serif; font-weight: 700; color: var(--mint); min-width: 60px; text-align: right; }
+        .calc-result { text-align: center; padding: 20px; background: rgba(149,213,178,0.1); border-radius: 12px; margin-top: 16px; }
+        .calc-result .big-num { font-family: 'Cinzel', serif; font-size: 2.5rem; color: var(--forest); font-weight: 700; }
+        .calc-result .big-label { font-size: 0.85rem; color: var(--deep-forest); margin-top: 4px; }
+
+        /* ===== FAQ ACCORDION ===== */
+        .accordion-item { border: 2px solid rgba(149,213,178,0.3); border-radius: 12px; margin-bottom: 10px; overflow: hidden; transition: border-color var(--transition); }
+        .accordion-item:hover, .accordion-item.open { border-color: var(--mint); }
+        .accordion-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: none; border: none; cursor: pointer; font-family: 'Quicksand', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--forest); text-align: left; transition: background var(--transition); }
+        .accordion-header:hover { background: rgba(149,213,178,0.06); }
+        .accordion-icon { transition: transform 0.3s ease; font-size: 0.85rem; }
+        .accordion-item.open .accordion-icon { transform: rotate(180deg); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 20px; }
+        .accordion-item.open .accordion-body { max-height: 350px; padding: 0 20px 16px; }
+        .accordion-body p { font-size: 0.9rem; color: var(--deep-forest); line-height: 1.7; }
+
+        /* ===== FOOTER ===== */
+        footer { background: linear-gradient(to bottom, transparent, rgba(149, 213, 178, 0.15)); border-top: 2px solid rgba(149, 213, 178, 0.3); padding: 4rem 2rem 2.5rem; text-align: center; position: relative; }
+        footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: radial-gradient(ellipse at top, rgba(82, 183, 136, 0.05) 0%, transparent 50%); pointer-events: none; }
+        .footer-logo { font-family: 'Parisienne', cursive; font-size: 3rem; color: var(--forest); margin-bottom: 1rem; animation: glow 3s ease-in-out infinite; }
+        .footer-text { font-family: 'Montserrat', sans-serif; color: var(--deep-forest); margin-bottom: 1.5rem; line-height: 1.7; font-weight: 300; font-size: 0.95rem; }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        [data-scroll] { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        [data-scroll].active { opacity: 1; transform: translateY(0); }
+        [data-scroll].active .feature-box, [data-scroll].active .info-box, [data-scroll].active .impact-card { animation: fadeInUp 0.8s ease-out backwards; }
+        [data-scroll].active .feature-box:nth-child(1), [data-scroll].active .info-box:nth-child(1), [data-scroll].active .impact-card:nth-child(1) { animation-delay: 0.1s; }
+        [data-scroll].active .feature-box:nth-child(2), [data-scroll].active .info-box:nth-child(2), [data-scroll].active .impact-card:nth-child(2) { animation-delay: 0.2s; }
+        [data-scroll].active .feature-box:nth-child(3), [data-scroll].active .impact-card:nth-child(3) { animation-delay: 0.3s; }
+        [data-scroll].active .impact-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* ===== GLOW ON HOVER ===== */
+        .info-box, .feature-box, .impact-card { position: relative; }
+        .info-box::after, .feature-box .glow-wrap, .impact-card::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; opacity: 0; z-index: -1; transition: opacity 0.5s ease; background: radial-gradient(600px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(82,183,136,0.1), transparent 40%); }
+        .info-box:hover::after, .impact-card:hover::after { opacity: 1; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1400px) { .three-column { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 900px) {
+            .two-column, .three-column { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 4rem; }
+            .section-title { font-size: 2.5rem; }
+            .hero-stats { flex-direction: column; gap: 1.5rem; }
+            .nav-links { display: none; position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: rgba(248,249,250,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 100px 2rem 2rem; transition: right 0.4s ease; box-shadow: -4px 0 20px rgba(0,0,0,0.1); gap: 0; }
+            .nav-links.open { right: 0; display: flex; }
+            .nav-links a { padding: 14px 0; font-size: 1rem; border-bottom: 1px solid rgba(149,213,178,0.2); }
+            .hamburger { display: block; }
+            .logo { font-size: 1.8rem; }
+            .impact-grid { grid-template-columns: 1fr; }
+            .section-dots { display: none; }
+            .cursor-spotlight { display: none !important; }
+            .grain-overlay { display: none; }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            nav, .scroll-progress, .back-to-top, .section-dots, .particles, .grain-overlay, .cursor-spotlight, .page-loader, .toast-container { display: none !important; }
+            .section { padding: 1.5rem 0; page-break-inside: avoid; }
+            .hero { min-height: auto; padding: 3rem 2rem; }
+            .hero-slide, .hero::after { display: none; }
+            .hero-content { color: #000; }
+            .hero h1 { color: var(--forest); font-size: 3rem; text-shadow: none; }
+            .info-box, .feature-box, .impact-card { box-shadow: none; border: 1px solid #ccc; }
+            a { color: var(--forest) !important; }
+        }
+
+        /* ===== REDUCED MOTION ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+            .particles, .grain-overlay, .cursor-spotlight { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-leaf">🌿</div>
+        <div class="loader-text">AERO</div>
+    </div>
+
+    <!-- Skip Nav -->
+    <a href="#home" class="skip-nav">Skip to content</a>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+    <!-- Section Dots -->
+    <div class="section-dots" id="sectionDots">
+        <button class="section-dot active" data-section="home"><span class="dot-label">Home</span></button>
+        <button class="section-dot" data-section="location"><span class="dot-label">Location</span></button>
+        <button class="section-dot" data-section="shelter"><span class="dot-label">Shelter</span></button>
+        <button class="section-dot" data-section="energy"><span class="dot-label">Energy</span></button>
+        <button class="section-dot" data-section="water"><span class="dot-label">Water</span></button>
+        <button class="section-dot" data-section="food"><span class="dot-label">Food</span></button>
+        <button class="section-dot" data-section="impact"><span class="dot-label">Impact</span></button>
+        <button class="section-dot" data-section="sewage"><span class="dot-label">Systems</span></button>
+    </div>
+
+    <!-- Film Grain -->
+    <div class="grain-overlay" aria-hidden="true"></div>
+
+    <!-- Spotlight Cursor -->
+    <div class="cursor-spotlight" aria-hidden="true" id="spotlight"></div>
+
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" aria-label="Close">✕</button>
+        <img src="" alt="Enlarged view" />
+    </div>
+
+    <!-- Keyboard Shortcuts Overlay -->
+    <div class="shortcuts-overlay" id="shortcutsOverlay">
+        <div class="shortcuts-box">
+            <h3>⌨️ Keyboard Shortcuts</h3>
+            <div class="shortcut-row"><span>Show shortcuts</span><span class="shortcut-key">?</span></div>
+            <div class="shortcut-row"><span>Scroll to top</span><span class="shortcut-key">T</span></div>
+            <div class="shortcut-row"><span>Next section</span><span class="shortcut-key">↓</span></div>
+            <div class="shortcut-row"><span>Previous section</span><span class="shortcut-key">↑</span></div>
+            <div class="shortcut-row"><span>Close overlay</span><span class="shortcut-key">ESC</span></div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">AERO</div>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#location">Location</a></li>
+                <li><a href="#shelter">Shelter</a></li>
+                <li><a href="#energy">Energy</a></li>
+                <li><a href="#water">Water</a></li>
+                <li><a href="#food">Food</a></li>
+                <li><a href="#impact">Impact</a></li>
+                <li><a href="#sewage">Systems</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-slideshow">
+            <div class="hero-slide active" style="background-image: url('https://images.pexels.com/photos/1496373/pexels-photo-1496373.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/1089842/pexels-photo-1089842.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/1048039/pexels-photo-1048039.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/533671/pexels-photo-533671.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-subtitle">Sustainable Living Redefined</div>
+            <h1>AERO</h1>
+            <p class="hero-description">
+                Autonomous Earth-Responsive Oasis<br>
+                A fully self-sustaining Earthship in Georgetown, Guyana
+            </p>
+            <a href="#location" class="cta-button">Explore the Design</a>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number" data-count="100">0</div>
+                    <div class="stat-label">% Off-Grid</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" data-count="2500">0</div>
+                    <div class="stat-label">Square Feet</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" data-count="2">0</div>
+                    <div class="stat-label">Residents</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section class="section" id="location" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">01 / LOCATION</div>
+                <h2 class="section-title">Georgetown, Guyana</h2>
+                <p class="section-subtitle">
+                    Strategically positioned on the coastal plain to maximize solar exposure, 
+                    rainfall collection, and agricultural potential in a tropical climate. The location 
+                    is carefully selected to harness nature's abundance while minimizing environmental impact.
+                </p>
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Climate Advantages</h3>
+                    <p class="info-box-text">
+                        Georgetown's tropical rainforest climate (Köppen Af) provides extraordinary conditions 
+                        with consistent temperatures year-round, abundant rainfall distributed across two distinct 
+                        wet seasons, and reliable solar radiation. The near-equatorial location at 6.8°N latitude 
+                        ensures minimal seasonal variation in daylight hours and temperature, creating predictable 
+                        conditions ideal for sustainable living systems. Northeast trade winds provide natural 
+                        cooling and help maintain comfortable humidity levels throughout the year.
+                    </p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Average Temperature</div><div class="data-value">26°C</div></div>
+                        <div class="data-item"><div class="data-label">Annual Rainfall</div><div class="data-value">2,200mm</div></div>
+                        <div class="data-item"><div class="data-label">Solar Hours/Day</div><div class="data-value">5.5hrs</div></div>
+                        <div class="data-item"><div class="data-label">Humidity Range</div><div class="data-value">75-85%</div></div>
+                        <div class="data-item"><div class="data-label">Wind Speed (Avg)</div><div class="data-value">12 km/h</div></div>
+                        <div class="data-item"><div class="data-label">Growing Days/Year</div><div class="data-value">365</div></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <h3 class="info-box-title">Strategic Location Benefits</h3>
+                    <p class="info-box-text">
+                        Positioned on Guyana's coastal plain at precisely 6.8°N latitude and 58.2°W longitude, 
+                        this site offers optimal solar access for energy generation while providing reliable water 
+                        sources and fertile alluvial soil deposited by centuries of river flow. The low elevation 
+                        (2 meters above sea level) allows for easy groundwater access as a backup system, while 
+                        proximity to Georgetown (15km) ensures access to emergency services and resources without 
+                        compromising off-grid independence. The coastal location provides cooling sea breezes while 
+                        maintaining distance from storm surge risk areas.
+                    </p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Latitude</div><div class="data-value">6.8°N</div></div>
+                        <div class="data-item"><div class="data-label">Longitude</div><div class="data-value">58.2°W</div></div>
+                        <div class="data-item"><div class="data-label">Elevation</div><div class="data-value">2m</div></div>
+                        <div class="data-item"><div class="data-label">Soil Type</div><div class="data-value">Alluvial</div></div>
+                        <div class="data-item"><div class="data-label">pH Level</div><div class="data-value">5.5-6.5</div></div>
+                        <div class="data-item"><div class="data-label">Water Table Depth</div><div class="data-value">3-5m</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider">🌿 ✦ 🌱</div>
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">🌧️</div>
+                    <h3 class="feature-title">Water Abundance</h3>
+                    <p class="feature-text">Georgetown receives over 2,200mm of annual rainfall distributed across two pronounced wet seasons (May-July and November-January), ensuring reliable water harvesting throughout the year. The coastal location provides backup groundwater access at shallow depths (3-5m), while the predictable rainfall patterns allow for precise cistern sizing. Consistent precipitation maintains year-round cistern replenishment with a remarkable 372% surplus capacity, providing exceptional resilience against drought periods and system maintenance requirements.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">☀️</div>
+                    <h3 class="feature-title">Solar Potential</h3>
+                    <p class="feature-text">The near-equatorial position ensures remarkably consistent solar exposure throughout the year with minimal seasonal variation—unlike temperate regions where winter solar production drops dramatically. Average 5.5 peak sun hours daily provides reliable renewable energy generation without the summer/winter fluctuations that complicate system design in higher latitudes. Northeast trade winds cool solar panels naturally, improving efficiency by reducing heat-related losses. The stable 12-hour day length year-round simplifies battery sizing and energy management.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🌱</div>
+                    <h3 class="feature-title">Fertile Growing Conditions</h3>
+                    <p class="feature-text">Rich alluvial soil deposited by rivers contains 5-8% organic content with excellent drainage characteristics and natural fertility. The slightly acidic pH (5.5-6.5) is ideal for most tropical crops including cassava, sweet potato, and a wide variety of vegetables. Year-round warm temperatures (never below 20°C) enable continuous food production with 3-4 vegetable harvests annually—far exceeding temperate climate capabilities. The warm, humid conditions accelerate composting to just 8-12 weeks versus 6-12 months in cooler climates, rapidly converting waste into valuable soil amendments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shelter -->
+    <section class="section" id="shelter" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">02 / SHELTER</div>
+                <h2 class="section-title">Sustainable Architecture</h2>
+                <p class="section-subtitle">2,500 sq ft thermal mass construction using 800 earth-rammed tires, 1,500+ recycled bottles, and 2,000+ aluminum cans with passive climate control maintaining 20-24°C without mechanical HVAC systems.</p>
+            </div>
+            <div class="main-image"><img loading="eager" src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1920&q=80" alt="Sustainable Earthship Building"></div>
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Core Specifications</h3>
+                    <p class="info-box-text">The structure utilizes 800 automobile tires (each weighing approximately 10kg empty, compacted to 3+ tons with earth) creating walls 2-3 feet thick. These massive walls provide extraordinary thermal mass that absorbs heat during the day and releases it slowly at night, maintaining stable interior temperatures. The U-shaped floor plan maximizes natural ventilation while providing protection from prevailing winds. Elevated on a concrete foundation to prevent flooding and improve airflow, the building incorporates over 3,500 pieces of recycled material diverted from landfills.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Total Square Footage</div><div class="data-value">2,500 ft²</div></div>
+                        <div class="data-item"><div class="data-label">Design Occupancy</div><div class="data-value">2 People</div></div>
+                        <div class="data-item"><div class="data-label">Earth-Rammed Tires</div><div class="data-value">800</div></div>
+                        <div class="data-item"><div class="data-label">Recycled Bottles</div><div class="data-value">1,500+</div></div>
+                        <div class="data-item"><div class="data-label">Aluminum Cans</div><div class="data-value">2,000+</div></div>
+                        <div class="data-item"><div class="data-label">Thermal Wall Thickness</div><div class="data-value">2-3 ft</div></div>
+                        <div class="data-item"><div class="data-label">Foundation Height</div><div class="data-value">18 in</div></div>
+                        <div class="data-item"><div class="data-label">Roof Overhang</div><div class="data-value">4-5 ft</div></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <h3 class="info-box-title">Design Philosophy & Performance</h3>
+                    <p class="info-box-text">The U-shaped floor plan wraps around an internal greenhouse, creating a protected microclimate while maximizing natural cross-ventilation. Massive thermal walls (2-3 feet thick) stabilize interior temperatures at a comfortable 20-24°C without any mechanical heating or cooling systems—a remarkable achievement in a tropical climate where conventional buildings require constant air conditioning. The elevated foundation (18 inches) prevents flooding during heavy tropical rains while dramatically improving airflow beneath the structure. North-facing windows (60% of north wall) capture prevailing northeast trade winds for natural cooling while deep roof overhangs (4-5 feet) prevent direct sun penetration, reducing heat gain. Clerestory windows near the ceiling create stack ventilation, exhausting hot air naturally. The result: 6-8°C cooler than conventional construction with zero energy consumption for climate control.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Interior Temperature</div><div class="data-value">20-24°C</div></div>
+                        <div class="data-item"><div class="data-label">North Window Coverage</div><div class="data-value">60%</div></div>
+                        <div class="data-item"><div class="data-label">Temp Reduction vs Conventional</div><div class="data-value">6-8°C</div></div>
+                        <div class="data-item"><div class="data-label">HVAC Energy Use</div><div class="data-value">0 kWh</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider">🌿 ✦ 🌱</div>
+            <div class="three-column">
+                <div class="feature-box">
+                    <div class="feature-icon">🏗️</div>
+                    <h3 class="feature-title">Thermal Mass Engineering</h3>
+                    <p class="feature-text">800 earth-rammed tires (each compacted to over 3 tons) create unprecedented thermal mass in walls 2-3 feet thick. This massive thermal battery absorbs heat during the day and releases it slowly at night, damping temperature swings and maintaining a comfortable 20-24°C interior without any HVAC equipment. The thermal mass reduces peak interior temperatures by 6-8°C compared to conventional construction, while the high heat capacity creates a 6-8 hour thermal lag—meaning interior temperatures change slowly even as outside conditions fluctuate. Each tire wall section has R-value equivalent to R-30 insulation when combined with thermal mass effects, far exceeding building code requirements.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🪟</div>
+                    <h3 class="feature-title">Passive Solar Design</h3>
+                    <p class="feature-text">Floor-to-ceiling windows span 60% of the north-facing wall, providing abundant natural light while capturing prevailing northeast trade winds for natural ventilation. Deep roof overhangs (4-5 feet) act as solar shields, preventing direct sun penetration during the highest sun angles while still allowing natural light. Clerestory windows positioned near the ceiling create powerful stack ventilation—hot air rises and exhausts naturally while drawing cool air through lower windows. This passive system moves air without fans or electricity. Strategic window placement creates cross-breezes that naturally cool the interior, while operable windows allow residents to fine-tune ventilation based on conditions.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">♻️</div>
+                    <h3 class="feature-title">Recycled Materials Integration</h3>
+                    <p class="feature-text">Interior non-structural walls incorporate 1,500+ glass bottles and 2,000+ aluminum cans set in concrete or adobe, creating beautiful translucent walls that filter natural light while maintaining privacy. These recycled materials divert approximately 300 kg of waste from landfills while providing thermal mass, sound insulation (reducing noise transmission by 30-40%), and unique aesthetic character. Bottles are laid horizontally in mortar, creating stunning light patterns as sunlight filters through colored glass. The aluminum cans, when laid horizontally and filled with sawdust or sand, provide additional insulation value. This approach proves that waste materials can become valuable building components, challenging conventional construction paradigms.</p>
+                </div>
+            </div>
+
+            <!-- NEW: AERO vs Conventional Comparison Table -->
+            <div class="divider">🌿 ✦ 🌱</div>
+            <h3 style="text-align:center; font-family:'Cinzel',serif; color:var(--forest); margin-bottom:16px; font-size:1.6rem;">AERO vs. Conventional Construction</h3>
+            <div class="compare-table-wrap">
+                <table class="compare-table">
+                    <thead><tr><th>Metric</th><th>AERO Earthship</th><th>Conventional Home</th><th>Advantage</th></tr></thead>
+                    <tbody>
+                        <tr><td>Wall Thickness</td><td class="aero-val">2-3 ft (tire walls)</td><td class="conv-val">6 in (wood frame)</td><td class="aero-val">5× thicker</td></tr>
+                        <tr><td>Thermal Mass</td><td class="aero-val">3+ tons per tire</td><td class="conv-val">Near zero</td><td class="aero-val">Massive heat battery</td></tr>
+                        <tr><td>HVAC Energy</td><td class="aero-val">0 kWh/year</td><td class="conv-val">4,000-8,000 kWh</td><td class="aero-val">100% savings</td></tr>
+                        <tr><td>Interior Temp</td><td class="aero-val">20-24°C passive</td><td class="conv-val">Requires A/C</td><td class="aero-val">6-8°C cooler</td></tr>
+                        <tr><td>Recycled Materials</td><td class="aero-val">3,500+ items</td><td class="conv-val">~0</td><td class="aero-val">5 tons diverted</td></tr>
+                        <tr><td>Carbon Emissions</td><td class="aero-val">0 tons/year</td><td class="conv-val">8-12 tons/year</td><td class="aero-val">100% reduction</td></tr>
+                        <tr><td>Utility Bills</td><td class="aero-val">$0/month</td><td class="conv-val">$200-400/month</td><td class="aero-val">$3,500/year saved</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Energy -->
+    <section class="section" id="energy" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">03 / ENERGY</div>
+                <h2 class="section-title">100% Renewable Power</h2>
+                <p class="section-subtitle">Advanced 6kW solar photovoltaic system generating 12,045 kWh annually with 37% surplus capacity, paired with 48 kWh lithium battery storage providing 2 days of autonomy. Zero fossil fuel dependence.</p>
+            </div>
+            <div class="main-image"><img loading="eager" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1920&q=80" alt="Solar Panel Array"></div>
+
+            <!-- NEW: Energy Breakdown Progress Bars -->
+            <div class="info-box" style="margin-bottom:2rem;">
+                <h3 class="info-box-title">Energy Distribution Breakdown</h3>
+                <div class="data-bar-item"><div class="data-bar-label">Kitchen Appliances <span>42%</span></div><div class="data-bar-track"><div class="data-bar-fill" style="--bar-width:42%"></div></div></div>
+                <div class="data-bar-item"><div class="data-bar-label">Water Pump System <span>21%</span></div><div class="data-bar-track"><div class="data-bar-fill" style="--bar-width:21%"></div></div></div>
+                <div class="data-bar-item"><div class="data-bar-label">Electronics & Backup <span>29%</span></div><div class="data-bar-track"><div class="data-bar-fill" style="--bar-width:29%"></div></div></div>
+                <div class="data-bar-item"><div class="data-bar-label">LED Lighting <span>8%</span></div><div class="data-bar-track"><div class="data-bar-fill" style="--bar-width:8%"></div></div></div>
+                <div class="data-bar-item"><div class="data-bar-label">HVAC (Heating/Cooling) <span>0%</span></div><div class="data-bar-track"><div class="data-bar-fill" style="--bar-width:0%"></div></div></div>
+            </div>
+
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Comprehensive Energy Budget</h3>
+                    <p class="info-box-text">Annual energy consumption of 8,760 kWh serves 2 residents in 2,500 sq ft with modern amenities and zero compromise on comfort. The tropical climate eliminates heating entirely, while passive design eliminates air conditioning—the two largest energy consumers in conventional homes. All lighting utilizes LED technology (90% more efficient than incandescent), while Energy Star appliances minimize consumption. The water pump for cistern distribution represents a significant load, but remains far below conventional municipal water system energy requirements. Smart load management and high-efficiency appliances achieve 65% lower energy consumption than comparable conventional homes.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Annual Total Consumption</div><div class="data-value">8,760 kWh</div></div>
+                        <div class="data-item"><div class="data-label">Daily Average Use</div><div class="data-value">24 kWh</div></div>
+                        <div class="data-item"><div class="data-label">Kitchen Appliances</div><div class="data-value">3,650 kWh</div></div>
+                        <div class="data-item"><div class="data-label">Water Pump System</div><div class="data-value">1,825 kWh</div></div>
+                        <div class="data-item"><div class="data-label">LED Lighting (All)</div><div class="data-value">730 kWh</div></div>
+                        <div class="data-item"><div class="data-label">Electronics & Backup</div><div class="data-value">2,555 kWh</div></div>
+                        <div class="data-item"><div class="data-label">HVAC (Heating/Cooling)</div><div class="data-value">0 kWh</div></div>
+                        <div class="data-item"><div class="data-label">vs. Conventional Home</div><div class="data-value">-65%</div></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <h3 class="info-box-title">Solar PV System Design</h3>
+                    <p class="info-box-text">The 6kW array comprises 20 monocrystalline panels (300W each, 19.5% efficiency rating) mounted at a shallow 7° tilt angle optimized for the 6.8°N latitude. This shallow angle minimizes wind resistance during tropical storms while allowing rainwater to naturally clean panels during downpours—eliminating maintenance washing. The system generates approximately 33 kWh daily (12,045 kWh annually) with Georgetown's reliable 5.5 peak sun hours, providing 37% surplus capacity to account for cloudy days, seasonal variation, and gradual panel degradation. Aluminum racking on the metal roof includes 8-inch spacing for airflow cooling underneath panels, improving efficiency. Micro-inverters on each panel optimize output and provide panel-level monitoring, while the system includes comprehensive lightning protection with surge arrestors protecting the substantial investment.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Total Array Capacity</div><div class="data-value">6 kW</div></div>
+                        <div class="data-item"><div class="data-label">Panel Configuration</div><div class="data-value">20×300W</div></div>
+                        <div class="data-item"><div class="data-label">Daily Generation</div><div class="data-value">33 kWh</div></div>
+                        <div class="data-item"><div class="data-label">Annual Production</div><div class="data-value">12,045 kWh</div></div>
+                        <div class="data-item"><div class="data-label">Battery Storage</div><div class="data-value">48 kWh</div></div>
+                        <div class="data-item"><div class="data-label">System Autonomy</div><div class="data-value">2 Days</div></div>
+                        <div class="data-item"><div class="data-label">Panel Efficiency</div><div class="data-value">19.5%</div></div>
+                        <div class="data-item"><div class="data-label">Surplus Capacity</div><div class="data-value">37%</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider">🌿 ✦ 🌱</div>
+            <div class="three-column">
+                <div class="feature-box"><div class="feature-icon">⚡</div><h3 class="feature-title">Advanced System Design</h3><p class="feature-text">Panels mount on aluminum racking attached to the standing-seam metal roof with 8-inch spacing underneath for critical airflow cooling—in tropical heat, cooling airflow can improve panel efficiency by 5-10%. The shallow 7° tilt angle is specifically optimized for 6.8°N latitude while providing two key benefits: minimal wind resistance during storms and automatic panel cleaning during Georgetown's frequent heavy rains. Micro-inverters on each panel (rather than a central inverter) optimize output when partial shading occurs, provide panel-level monitoring for maintenance, and eliminate single points of failure. Comprehensive lightning protection with surge arrestors on all circuits protects the system in this tropical storm region. The monocrystalline panels carry a 25+ year warranty with guaranteed 80% output retention—meaning after 25 years, panels will still produce 80% of original capacity.</p></div>
+                <div class="feature-box"><div class="feature-icon">🔋</div><h3 class="feature-title">Energy Storage Technology</h3><p class="feature-text">The 48 kWh lithium iron phosphate (LiFePO4) battery bank comprises four 12 kWh modules, providing two days of complete autonomy without solar input—critical during tropical storms or extended cloudy periods. LiFePO4 chemistry is specifically chosen for superior thermal stability in tropical heat (unlike lithium-ion batteries that degrade rapidly above 30°C), exceptional cycle life (6000+ cycles at 80% depth of discharge), and inherent safety (no thermal runaway risk). The smart Battery Management System (BMS) maintains optimal 20-90% charge window to maximize the 15+ year lifespan while monitoring cell temperatures, voltages, and state of charge. Unlike lead-acid batteries requiring replacement every 3-5 years, LiFePO4 technology provides 3x longer life with 95% round-trip efficiency versus 80% for lead-acid—less energy lost in charging/discharging cycles.</p></div>
+                <div class="feature-box"><div class="feature-icon">📊</div><h3 class="feature-title">Efficiency Optimization</h3><p class="feature-text">Every light fixture utilizes LED technology providing 90 lumens per watt—90% more efficient than incandescent bulbs while lasting 25x longer. Energy Star certified appliances throughout: refrigerator consuming just 450 kWh annually (vs. 600-800 kWh for standard models), induction cooktop operating at 90% efficiency (vs. 40% for gas, 75% for electric coil), front-load washing machine using 150 kWh yearly (vs. 400 kWh for top-load). The induction cooktop alone saves 50% energy compared to conventional cooking while heating water 25-50% faster. Smart power strips eliminate phantom loads from devices in standby mode—typically 5-10% of home energy use. The result: AERO consumes 65% less energy than comparable conventional homes while maintaining superior comfort and functionality, demonstrating that sustainable living need not sacrifice modern amenities.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Water -->
+    <section class="section" id="water" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">04 / WATER</div>
+                <h2 class="section-title">Complete Water Independence</h2>
+                <p class="section-subtitle">Sophisticated rainwater harvesting system achieving 372% surplus capacity through 185m² metal roof collection, 50,000L storage, advanced multi-stage filtration, and greywater recycling—providing drinking-quality water without municipal connections.</p>
+            </div>
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Comprehensive Water Budget</h3>
+                    <p class="info-box-text">Annual water needs of 109,500 liters serve 2 residents with indoor use (drinking, cooking, bathing, laundry), greenhouse irrigation for food production, and landscape watering—all without municipal water connections. Georgetown's exceptional 2,200mm annual rainfall exceeds total needs by 3.7x, with distribution across two wet seasons ensuring year-round availability. Water-efficient fixtures throughout reduce consumption by 40-50% compared to conventional fixtures: low-flow showerheads (7.5L/min vs. 15L/min standard), dual-flush toilets (3L/6L vs. 13L standard), aerator faucets (5L/min vs. 8L/min). The combination of abundant rainfall, efficient fixtures, and sophisticated recycling creates a resilient water system with massive surplus capacity—166 days of autonomy without any rainfall.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Annual Requirement</div><div class="data-value">109,500 L</div></div>
+                        <div class="data-item"><div class="data-label">Daily Average Use</div><div class="data-value">300 L</div></div>
+                        <div class="data-item"><div class="data-label">Indoor Consumption</div><div class="data-value">54,750 L</div></div>
+                        <div class="data-item"><div class="data-label">Greenhouse Irrigation</div><div class="data-value">36,500 L</div></div>
+                        <div class="data-item"><div class="data-label">Landscape Watering</div><div class="data-value">18,250 L</div></div>
+                        <div class="data-item"><div class="data-label">Per Person Daily</div><div class="data-value">150 L</div></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <h3 class="info-box-title">Collection & Storage System</h3>
+                    <p class="info-box-text">The 185 m² standing-seam metal roof captures approximately 407,000 liters annually with 90% collection efficiency (accounting for losses from evaporation, first-flush diversion, and system maintenance). This massive 372% surplus provides exceptional resilience against drought, system failures, or increased usage. Primary storage consists of a 40,000L ferro-cement cistern buried underground where cool earth temperatures (20-22°C) naturally inhibit bacterial growth and reduce chlorine requirements. A supplementary 10,000L polyethylene reserve tank provides additional capacity and system redundancy. Combined storage of 50,000L provides 166 days of complete autonomy without any rainfall—exceeding the longest recorded dry period in Georgetown by 3x. The buried cistern design also protects water from contamination, maintains cool temperatures, and survives tropical storms that might damage above-ground tanks.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Collection Roof Area</div><div class="data-value">185 m²</div></div>
+                        <div class="data-item"><div class="data-label">Annual Capture</div><div class="data-value">407,000 L</div></div>
+                        <div class="data-item"><div class="data-label">Primary Cistern</div><div class="data-value">40,000 L</div></div>
+                        <div class="data-item"><div class="data-label">Reserve Tank</div><div class="data-value">10,000 L</div></div>
+                        <div class="data-item"><div class="data-label">Total Surplus</div><div class="data-value">372%</div></div>
+                        <div class="data-item"><div class="data-label">Days Autonomy</div><div class="data-value">166 Days</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider">🌿 ✦ 🌱</div>
+            <div class="three-column">
+                <div class="feature-box"><div class="feature-icon">💧</div><h3 class="feature-title">Advanced Collection System</h3><p class="feature-text">Standing-seam metal roof with aluminum gutters and fine-mesh leaf guards prevents debris entry while capturing rainfall efficiently. Sophisticated first-flush diverters automatically discard the initial 20 liters per downspout—removing dust, pollen, and pollutants accumulated on the roof between rains—before allowing clean water to enter cisterns. High-quality 50-micron stainless steel screens provide secondary filtration before cistern entry, protecting the stored water from contamination. The metal roof material is specifically chosen over asphalt shingles because it doesn't leach chemicals, lasts 50+ years (vs. 15-20 for shingles), and provides a cleaner collection surface. Gutter sizing handles Georgetown's intense tropical downpours (up to 50mm/hour) without overflow—capturing nearly 4x annual needs even in heavy rain events.</p></div>
+                <div class="feature-box"><div class="feature-icon">🔬</div><h3 class="feature-title">Multi-Stage Filtration</h3><p class="feature-text">Advanced 3-stage point-of-use treatment ensures drinking water quality exceeding WHO standards and comparable to bottled water. Stage 1: 50-micron sediment filter removes particles, rust, and visible contaminants (replaced quarterly). Stage 2: Activated carbon block filter removes chlorine, volatile organic compounds (VOCs), chemicals, pesticides, and odors while improving taste (replaced every 6 months). Stage 3: UV sterilization system delivers 40 mJ/cm² dosage achieving 99.99% kill rate for bacteria, viruses, and protozoa including giardia and cryptosporidium—without adding chemicals that affect taste (lamp replaced annually). This comprehensive system produces water cleaner than most municipal supplies while avoiding the plastic waste of bottled water—saving 3,000+ bottles annually.</p></div>
+                <div class="feature-box"><div class="feature-icon">♻️</div><h3 class="feature-title">Greywater Recycling</h3><p class="feature-text">Greywater from sinks, showers, and laundry (225L daily, 75% of total indoor use) routes to four botanical treatment cells (1,200L total capacity) rather than joining blackwater in the septic system. Each 300L cell contains gravel substrate and water-loving plants (banana, canna, papyrus, taro) whose extensive root systems and associated beneficial bacteria naturally filter and purify water. The 5-7 day retention time through cascading cells achieves 85-95% BOD (biological oxygen demand) reduction and removes 80-90% of nitrogen and phosphorus—transforming greywater into irrigation-quality water safe for food crops. This natural treatment process recycles 82,125L annually for greenhouse and garden irrigation, reducing freshwater demand by 43% while avoiding the energy-intensive processes of conventional wastewater treatment. The botanical cells also create beautiful water gardens, demonstrating how wastewater treatment can be both functional and aesthetic.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Food Production -->
+    <section class="section" id="food" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">05 / FOOD</div>
+                <h2 class="section-title">Year-Round Food Production</h2>
+                <p class="section-subtitle">Integrated 1,500 sq ft food production system combining climate-controlled greenhouse, permaculture gardens, vertical growing systems, and aquaponics—generating 1,250 lbs annually and meeting 60-70% of household dietary needs through continuous tropical growing cycles.</p>
+            </div>
+            <div class="main-image"><img loading="eager" src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=1920&q=80" alt="Greenhouse Interior with Plants"></div>
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Production Capacity & Methods</h3>
+                    <p class="info-box-text">Georgetown's extraordinary tropical climate (consistent 26°C, 75-85% humidity, 12-hour days year-round) enables continuous food production impossible in temperate regions. Leafy greens mature in just 30-45 days allowing 8 successive crops annually versus 2-3 in temperate climates. Tomatoes, peppers, and beans produce in 70-90 days enabling 4-5 crops yearly. Root vegetables like cassava and sweet potato require 3-4 months but produce massive yields (10-15 lbs per plant). Perennial trees (papaya, banana, plantain) fruit continuously once established. The 1,500 sq ft integrated system combining greenhouse (500 sq ft), outdoor gardens (800 sq ft), and vertical/aquaponic systems (200 sq ft) generates 1,250 lbs total annual production—meeting 60-70% of dietary needs for 2 people with complete self-sufficiency in fresh vegetables and partial self-sufficiency in fruits and protein.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Indoor Greenhouse</div><div class="data-value">500 ft²</div></div>
+                        <div class="data-item"><div class="data-label">Outdoor Permaculture</div><div class="data-value">800 ft²</div></div>
+                        <div class="data-item"><div class="data-label">Vertical/Aquaponics</div><div class="data-value">200 ft²</div></div>
+                        <div class="data-item"><div class="data-label">Total Growing Space</div><div class="data-value">1,500 ft²</div></div>
+                        <div class="data-item"><div class="data-label">Annual Production</div><div class="data-value">1,250 lbs</div></div>
+                        <div class="data-item"><div class="data-label">Food Self-Sufficiency</div><div class="data-value">60-70%</div></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <h3 class="info-box-title">Detailed Production Breakdown</h3>
+                    <p class="info-box-text">The integrated food system produces a diverse array of nutrient-dense foods across multiple growing zones. Vegetables (1,000 lbs annually) provide complete self-sufficiency in fresh produce including tomatoes, peppers, lettuce, cassava, sweet potato, okra, eggplant, beans, and more—far exceeding the 400-600 lbs of vegetables typically consumed by 2 people annually. Fruits (200 lbs) from papaya, banana, plantain, and passion fruit provide essential vitamins and natural sweetness. Protein (50 lbs) from tilapia in the aquaponic system supplements dietary needs. Herbs and spices grown year-round eliminate grocery purchases. The system emphasizes nutrient-dense foods (leafy greens, peppers, tomatoes) over calorie crops, complemented by purchased staples (rice, flour, cooking oil) that require extensive land to produce. This strategy maximizes nutrition and freshness per square foot while maintaining realistic production goals.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Vegetables (Total)</div><div class="data-value">1,000 lbs</div></div>
+                        <div class="data-item"><div class="data-label">Fruits (Total)</div><div class="data-value">200 lbs</div></div>
+                        <div class="data-item"><div class="data-label">Fish Protein</div><div class="data-value">50 lbs</div></div>
+                        <div class="data-item"><div class="data-label">Vegetable Self-Sufficiency</div><div class="data-value">100%</div></div>
+                        <div class="data-item"><div class="data-label">Crops Harvested/Year</div><div class="data-value">3-8×</div></div>
+                        <div class="data-item"><div class="data-label">Growing Days/Year</div><div class="data-value">365</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider">🌿 ✦ 🌱</div>
+            <div class="three-column">
+                <div class="feature-box"><div class="feature-icon">🌿</div><h3 class="feature-title">Climate-Controlled Greenhouse</h3><p class="feature-text">The attached 500 sq ft greenhouse wraps around the U-shaped building core, creating a protected microclimate for high-value crops requiring consistent conditions. Six raised beds (each 4×8 ft, 12 inches deep) filled with 70% compost and 30% native soil grow tomatoes (200 lbs/year from 20 plants), peppers (80 lbs from 15 plants), lettuce (120 lbs from successive 30-day plantings), fresh herbs (30 lbs—basil, cilantro, parsley), cucumbers (100 lbs from 6 plants), and beans (70 lbs). Greywater drip irrigation delivers nutrients while conserving water. LED grow lights supplement natural sunlight during cloudy periods, ensuring consistent production. The climate-controlled space extends growing seasons for temperature-sensitive crops while protecting from heavy rains and pests. Screened vents provide ventilation while excluding insects. Total production: 600 lbs annually from the most valuable space in the system.</p></div>
+                <div class="feature-box"><div class="feature-icon">🥬</div><h3 class="feature-title">Outdoor Permaculture System</h3><p class="feature-text">The 800 sq ft outdoor garden implements permaculture principles organizing plants into productive "guilds"—communities that support each other through nitrogen fixation, pest management, and shade provision. Cassava (300 lbs from 15 plants—drought-tolerant staple), sweet potato (150 lbs—covers ground preventing weeds), okra (100 lbs—thrives in heat), eggplant (80 lbs), papaya (150 lbs from 3 trees fruiting continuously), banana (120 lbs from 2 clumps), plantain (100 lbs—cooking bananas). Deep 4-inch wood chip mulch retains soil moisture during dry periods, suppresses weeds, adds organic matter as it decomposes, and moderates soil temperature. Nitrogen-fixing pigeon pea plants throughout provide free fertilizer. Diverse plantings confuse pests while attracting beneficial insects. Zero-till methods preserve soil structure. Total: 1,000 lbs annually from resilient tropical crops requiring minimal intervention once established.</p></div>
+                <div class="feature-box"><div class="feature-icon">🌾</div><h3 class="feature-title">Vertical & Aquaponic Systems</h3><p class="feature-text">Vertical growing systems (200 sq ft) maximize production from limited space using tower gardens, trellises, and walls—multiplying effective growing area 3-4x. Tower gardens grow lettuce, herbs, strawberries, and spinach in stacked vertical columns. Sturdy trellises support climbing beans, passion fruit vines, and small-fruited pumpkins. Wall-mounted containers grow herbs and trailing plants. Total vertical production: 190 lbs annually. The integrated 300-gallon aquaponic system raises 30 tilapia fish (50 lbs harvestable protein over 6-month cycles) while their nutrient-rich waste water fertilizes growing beds producing additional leafy greens (70 lbs lettuce, bok choy, kale). The closed-loop system uses 90% less water than soil gardening while producing both protein and vegetables simultaneously—a remarkably efficient use of space and resources. Total combined vertical/aquaponic: 260 lbs.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Environmental Impact -->
+    <section class="section" id="impact" data-scroll style="background: linear-gradient(to bottom, var(--cream), rgba(149, 213, 178, 0.05));">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">06 / ENVIRONMENTAL IMPACT</div>
+                <h2 class="section-title">Measurable Sustainability</h2>
+                <p class="section-subtitle">AERO demonstrates radical environmental responsibility through complete fossil fuel independence, zero carbon emissions, minimal waste generation, and positive ecological impacts—achieving sustainability metrics that exceed conventional buildings by orders of magnitude.</p>
+            </div>
+            <div class="impact-grid">
+                <div class="impact-card"><div class="impact-icon">🌍</div><div class="impact-value">0</div><div class="impact-label">Carbon Emissions<br>(tons CO₂/year)</div></div>
+                <div class="impact-card"><div class="impact-icon">💡</div><div class="impact-value">12,045</div><div class="impact-label">Renewable Energy<br>Generated (kWh/year)</div></div>
+                <div class="impact-card"><div class="impact-icon">💧</div><div class="impact-value">407,000</div><div class="impact-label">Rainwater Harvested<br>(liters/year)</div></div>
+                <div class="impact-card"><div class="impact-icon">🌱</div><div class="impact-value">1,250</div><div class="impact-label">Food Produced<br>(pounds/year)</div></div>
+                <div class="impact-card"><div class="impact-icon">♻️</div><div class="impact-value">95%</div><div class="impact-label">Waste Diverted<br>from Landfills</div></div>
+                <div class="impact-card"><div class="impact-icon">🚫</div><div class="impact-value">0</div><div class="impact-label">Municipal Utility<br>Connections</div></div>
+                <div class="impact-card"><div class="impact-icon">🌡️</div><div class="impact-value">0</div><div class="impact-label">HVAC Energy<br>(kWh/year)</div></div>
+                <div class="impact-card"><div class="impact-icon">💰</div><div class="impact-value">$3,500</div><div class="impact-label">Annual Savings<br>vs. Conventional</div></div>
+            </div>
+
+            <!-- NEW: Carbon Calculator -->
+            <div class="divider">🌿 ✦ 🌱</div>
+            <h3 style="text-align:center; font-family:'Cinzel',serif; color:var(--forest); margin-bottom:8px; font-size:1.6rem;">Carbon Savings Calculator</h3>
+            <p style="text-align:center; font-size:0.88rem; color:var(--deep-forest); margin-bottom:16px; font-weight:300;">See how many years of AERO living compares to conventional carbon output</p>
+            <div class="calculator-box">
+                <div class="calc-row">
+                    <label>Years living in AERO</label>
+                    <input type="range" id="calcYears" min="1" max="50" value="25">
+                    <div class="calc-val" id="calcYearsVal">25</div>
+                </div>
+                <div class="calc-row">
+                    <label>Conventional home CO₂/year (tons)</label>
+                    <input type="range" id="calcCO2" min="4" max="20" value="10">
+                    <div class="calc-val" id="calcCO2Val">10</div>
+                </div>
+                <div class="calc-result">
+                    <div class="big-num" id="calcResult">250</div>
+                    <div class="big-label">tons of CO₂ prevented — equivalent to planting <span id="calcTrees">10,000</span> trees</div>
+                </div>
+            </div>
+
+            <div class="divider">🌿 ✦ 🌱</div>
+            <div class="two-column" style="margin-top: 3rem;">
+                <div class="info-box">
+                    <h3 class="info-box-title">Carbon Footprint Comparison</h3>
+                    <p class="info-box-text">AERO achieves true carbon neutrality—not through offsetting or credits, but through absolute zero fossil fuel consumption. Conventional comparable homes emit 8-12 tons CO₂ annually from electricity (4-6 tons), natural gas heating (2-4 tons), and water treatment/transportation (1-2 tons). AERO's solar power, passive heating/cooling, rainwater harvesting, and on-site food production eliminate these emissions entirely. Over 25 years, AERO prevents 200-300 tons CO₂ emissions—equivalent to removing 50 cars from roads for a year, planting 10,000 trees, or avoiding 500,000 miles of driving. The embodied carbon in recycled construction materials (tires, bottles, cans) is recovered from waste streams rather than adding new manufacturing emissions.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">AERO Annual Emissions</div><div class="data-value">0 tons</div></div>
+                        <div class="data-item"><div class="data-label">Conventional Home</div><div class="data-value">10 tons</div></div>
+                        <div class="data-item"><div class="data-label">25-Year Prevention</div><div class="data-value">250 tons</div></div>
+                        <div class="data-item"><div class="data-label">Equivalent Cars Removed</div><div class="data-value">60</div></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <h3 class="info-box-title">Resource Conservation</h3>
+                    <p class="info-box-text">Beyond zero emissions, AERO demonstrates radical resource efficiency. Water consumption of 150L/person/day is 60% below U.S. average (250L) and 40% below European standards (180L)—achieved through efficient fixtures, greywater recycling, and behavioral awareness. Energy use of 12 kWh/day/person is 70% below U.S. average (40 kWh) despite modern appliances and electronics. The 60-70% food self-sufficiency eliminates transportation emissions, packaging waste, and industrial agriculture impacts for majority of diet. Construction materials diverted 3,500+ items (800 tires, 1,500 bottles, 2,000 cans) from landfills—approximately 5 tons of waste transformed into valuable building components. Over the building's 50+ year lifespan, resource savings multiply: 20+ million liters of municipal water, 400,000+ kWh of grid electricity, and 30+ tons of food production.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Water Use vs. Average</div><div class="data-value">-60%</div></div>
+                        <div class="data-item"><div class="data-label">Energy Use vs. Average</div><div class="data-value">-70%</div></div>
+                        <div class="data-item"><div class="data-label">Recycled Building Materials</div><div class="data-value">5 tons</div></div>
+                        <div class="data-item"><div class="data-label">50-Year Water Savings</div><div class="data-value">20M L</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sewage & Waste -->
+    <section class="section" id="sewage" data-scroll>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">07 / INTEGRATED SYSTEMS</div>
+                <h2 class="section-title">Closed-Loop Resource Management</h2>
+                <p class="section-subtitle">Sophisticated wastewater treatment through botanical filtration and zero-waste management achieving 95% landfill diversion—transforming potential pollutants into valuable resources through natural biological processes and circular economy principles.</p>
+            </div>
+            <div class="two-column">
+                <div class="info-box">
+                    <h3 class="info-box-title">Botanical Wastewater Treatment</h3>
+                    <p class="info-box-text">The dual-stream wastewater system intelligently separates greywater (75% from sinks, showers, laundry—225L daily) from blackwater (25% from toilets—75L daily), allowing each stream to receive appropriate treatment. Greywater routes to four cascading botanical treatment cells (1,200L total, 300L each) planted with water-loving tropicals: banana, papyrus, canna lily, and taro. These plants' extensive root systems provide enormous surface area for beneficial bacteria colonization. As water slowly flows through gravel substrate (5-7 day retention), bacterial communities break down organic matter, absorb nutrients (nitrogen, phosphorus), and remove contaminants—achieving remarkable 85-95% BOD reduction, 80-90% nitrogen removal, and 80-95% phosphorus capture. The purified water exits safe for irrigating food crops, closing the water loop while the plants thrive on nutrients they extract—producing beauty from waste.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Daily Wastewater</div><div class="data-value">300 L</div></div>
+                        <div class="data-item"><div class="data-label">Greywater (75%)</div><div class="data-value">225 L</div></div>
+                        <div class="data-item"><div class="data-label">Treatment Cells</div><div class="data-value">4×300L</div></div>
+                        <div class="data-item"><div class="data-label">Retention Time</div><div class="data-value">5-7 days</div></div>
+                        <div class="data-item"><div class="data-label">BOD Reduction</div><div class="data-value">85-95%</div></div>
+                        <div class="data-item"><div class="data-label">Water Recycled/Year</div><div class="data-value">82,125 L</div></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <h3 class="info-box-title">Zero-Waste Management</h3>
+                    <p class="info-box-text">AERO's sophisticated waste management achieves 95% landfill diversion—far exceeding the 35% U.S. national average and 50% European targets. A three-bin composting system processes all organic waste: kitchen scraps (vegetable peels, coffee grounds, eggshells—200 kg/year), yard waste (grass clippings, prunings—150 kg/year), and paper products (cardboard, paper—50 kg/year). The tropical climate's warmth and humidity accelerate decomposition to 8-12 weeks versus 6-12 months in cooler regions. The resulting 200 kg of rich compost annually returns nutrients to gardens, completing the nutrient cycle. Glass bottles and aluminum cans generated are integrated into construction projects or recycled. Bulk food purchasing eliminates 100+ packages annually. Home food production dramatically reduces packaging. Result: only 50 kg annually (0.96 kg weekly) reaches landfills—5% of the 1,000 kg typical household waste—while saving $450 in garbage fees.</p>
+                    <div class="data-grid">
+                        <div class="data-item"><div class="data-label">Annual Waste Generated</div><div class="data-value">1,000 kg</div></div>
+                        <div class="data-item"><div class="data-label">Composted Organics</div><div class="data-value">400 kg</div></div>
+                        <div class="data-item"><div class="data-label">Recycled Materials</div><div class="data-value">550 kg</div></div>
+                        <div class="data-item"><div class="data-label">To Landfill</div><div class="data-value">50 kg</div></div>
+                        <div class="data-item"><div class="data-label">Diversion Rate</div><div class="data-value">95%</div></div>
+                        <div class="data-item"><div class="data-label">Compost Produced</div><div class="data-value">200 kg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider">🌿 ✦ 🌱</div>
+            <div class="three-column">
+                <div class="feature-box"><div class="feature-icon">🌱</div><h3 class="feature-title">Living Filtration System</h3><p class="feature-text">The cascading 4-cell botanical treatment system harnesses powerful natural purification processes. Each 300L cell contains 18 inches of gravel substrate providing enormous surface area for beneficial bacteria colonization—approximately 2 million bacteria per cubic centimeter. These microscopic workers break down organic compounds, while plant roots absorb nutrients and oxygenate the water. Water-loving plants chosen for vigorous growth and nutrient uptake: banana (nitrogen), papyrus (phosphorus), canna lily (heavy metals), taro (general nutrients). The gravity-fed cascade requires zero energy while treating water to irrigation standards. Plants thrive on extracted nutrients, producing lush growth and flowers—proof that one system's waste is another's resource. After 5-7 days through gravel and root zones, water emerges clear and safe for vegetable irrigation, completing a beautiful closed loop where nothing is wasted.</p></div>
+                <div class="feature-box"><div class="feature-icon">🚽</div><h3 class="feature-title">Blackwater Treatment</h3><p class="feature-text">Blackwater from toilets (75L daily, 25% of total wastewater) receives conventional septic treatment through a robust 1,500L two-chamber concrete tank. The first chamber provides primary settlement where solids separate and begin anaerobic digestion—beneficial bacteria breaking down organic matter without oxygen, generating biogas (mostly methane) that vents safely. The second chamber provides additional settling and clarification. Clarified effluent then flows to a 200 sq ft subsurface leach field where soil bacteria complete treatment through aerobic decomposition. The system requires pumping every 3-5 years to remove accumulated solids. Alternative option: composting toilets eliminate blackwater entirely while producing valuable compost, saving 27,375L water annually and eliminating septic maintenance—but requiring active management. Both approaches successfully manage human waste without environmental contamination.</p></div>
+                <div class="feature-box"><div class="feature-icon">♻️</div><h3 class="feature-title">Circular Economy</h3><p class="feature-text">AERO embodies circular economy principles where resources cycle continuously rather than flowing linearly from extraction to landfill. Three-bin composting transforms 400 kg organic "waste" into 200 kg nutrient-rich soil amendment—returning carbon, nitrogen, phosphorus to gardens where it grows food. Kitchen scraps become compost, compost grows vegetables, vegetable scraps return to compost—a perfect circle. Glass bottles and aluminum cans integrate into walls or recycle into new products. Greywater nourishes botanical cells which purify it for irrigation which grows food which generates more greywater. Food production on-site eliminates packaging that would become waste. Bulk purchasing reduces packaging 80%. The result: 95% diversion (versus 35% national average), only 50 kg landfill annually, $450 yearly savings in garbage fees, and demonstration that "waste" is a design flaw—resources simply misplaced in linear systems.</p></div>
+            </div>
+
+            <!-- NEW: FAQ Accordion -->
+            <div class="divider">🌿 ✦ 🌱</div>
+            <h3 style="text-align:center; font-family:'Cinzel',serif; color:var(--forest); margin-bottom:16px; font-size:1.6rem;">Frequently Asked Questions</h3>
+            <div style="max-width:800px; margin:0 auto;">
+                <div class="accordion-item"><button class="accordion-header">How much does an Earthship like AERO cost to build? <span class="accordion-icon">▼</span></button><div class="accordion-body"><p>Construction costs for a 2,500 sq ft Earthship in Guyana are estimated at $80,000-120,000 USD, significantly lower than conventional construction due to the use of recycled materials (tires, bottles, cans) and natural building techniques. The eliminated utility infrastructure (no grid connection, no water mains, no sewer hookup) saves an additional $15,000-25,000 in site preparation costs. With zero monthly utility bills saving $3,500/year, the investment pays for itself in 20-30 years through operational savings alone.</p></div></div>
+                <div class="accordion-item"><button class="accordion-header">Can this design work in other climates? <span class="accordion-icon">▼</span></button><div class="accordion-body"><p>Earthship principles adapt to any climate—over 3,000 have been built worldwide from Taos, New Mexico to Norway to West Africa. The core concepts (thermal mass, passive solar, rainwater harvesting) are universal, though specific designs adjust: colder climates add south-facing glazing and insulation, drier climates emphasize water storage, and windier locations modify building orientation. AERO is specifically optimized for tropical conditions, but the underlying methodology scales globally.</p></div></div>
+                <div class="accordion-item"><button class="accordion-header">What happens during extended power outages or storms? <span class="accordion-icon">▼</span></button><div class="accordion-body"><p>AERO is inherently storm-resilient. The 48 kWh battery bank provides 2 full days of autonomy without any solar input. The 50,000L water storage provides 166 days without rainfall. Tire walls withstand Category 5 hurricane winds. The buried cistern survives storms that destroy above-ground tanks. Food gardens recover quickly in tropical conditions. Unlike grid-dependent homes that lose power, water, and cooling simultaneously during storms, AERO's self-sufficient systems continue operating independently.</p></div></div>
+                <div class="accordion-item"><button class="accordion-header">Is the water really safe to drink? <span class="accordion-icon">▼</span></button><div class="accordion-body"><p>The 3-stage filtration system (sediment filter → activated carbon → UV sterilization at 40 mJ/cm²) achieves 99.99% pathogen elimination, exceeding WHO drinking water standards. The UV system is the same technology used in municipal water treatment plants. Regular testing confirms water quality comparable to or exceeding bottled water, without the plastic waste. The metal roof collection surface is specifically chosen because unlike asphalt shingles, it doesn't leach chemicals into collected water.</p></div></div>
+                <div class="accordion-item"><button class="accordion-header">How much maintenance does AERO require? <span class="accordion-icon">▼</span></button><div class="accordion-body"><p>Daily: 30 minutes for garden tending and system checks. Weekly: basic cleaning of solar panels (often done by rain), compost turning. Quarterly: sediment filter replacement ($15). Semi-annually: carbon filter replacement ($40). Annually: UV lamp replacement ($60), septic inspection. Every 3-5 years: septic pumping ($200). The total annual maintenance cost is approximately $300-400—a fraction of the $3,500+ in utility bills saved. Most tasks are simple and require no specialized skills.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="waste">
+        <div class="footer-content">
+            <div class="footer-logo">AERO</div>
+            <p class="footer-text">
+                Autonomous Earth-Responsive Oasis<br>
+                Proving sustainable living is not just possible—it's inevitable.<br>
+                <strong>Georgetown, Guyana</strong>
+            </p>
+            <p class="footer-text" style="margin-top: 2rem; font-size: 1rem; opacity: 0.8;">
+                🌿 100% Off-Grid • 0 Carbon Emissions • 95% Waste Diversion 🌿
+            </p>
+            <div style="text-align:center; margin:16px 0;">
+                <button class="back-to-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:none; border:none; color:var(--mint); cursor:pointer; font-family:'Quicksand',sans-serif; font-size:0.82rem;">↑ Back to top</button>
+            </div>
+            <p class="footer-text" style="margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.6;">
+                © 2026 AERO Project. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        /* ===== PAGE LOADER ===== */
+        var loader = document.getElementById('pageLoader');
+        window.addEventListener('load', function() { setTimeout(function() { loader.classList.add('hidden'); }, 600); });
+
+        /* ===== HERO SLIDESHOW (4s interval) ===== */
+        var currentSlide = 0;
+        var slides = document.querySelectorAll('.hero-slide');
+        setInterval(function() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 4000);
+
+        /* ===== ANIMATED COUNTERS ===== */
+        function animateCounter(el, target, duration) {
+            duration = duration || 2000;
+            var current = 0, increment = target / (duration / 16);
+            var timer = setInterval(function() {
+                current += increment;
+                if (current >= target) { el.textContent = target.toLocaleString(); clearInterval(timer); }
+                else { el.textContent = Math.floor(current).toLocaleString(); }
+            }, 16);
+        }
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.stat-number[data-count]').forEach(function(el) {
+                setTimeout(function() { animateCounter(el, parseInt(el.getAttribute('data-count'))); }, 500);
+            });
+        });
+
+        /* ===== PARTICLES ===== */
+        var particlesEl = document.getElementById('particles');
+        for (var i = 0; i < 25; i++) {
+            var p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 15 + 's';
+            p.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesEl.appendChild(p);
+        }
+
+        /* ===== SMOOTH SCROLL ===== */
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+                // Close mobile menu
+                var nl = document.getElementById('navLinks');
+                var hb = document.getElementById('hamburger');
+                if (nl) nl.classList.remove('open');
+                if (hb) hb.classList.remove('open');
+            });
+        });
+
+        /* ===== HAMBURGER MENU ===== */
+        var hamburger = document.getElementById('hamburger');
+        var navLinks = document.getElementById('navLinks');
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('open');
+                navLinks.classList.toggle('open');
+            });
+        }
+
+        /* ===== INTERSECTION OBSERVER — unified ===== */
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Animate impact values
+                    entry.target.querySelectorAll('.impact-value').forEach(function(el) {
+                        if (!el.classList.contains('counted')) {
+                            el.classList.add('counted');
+                            var num = parseInt(el.textContent.replace(/[^0-9]/g, ''));
+                            if (num > 0) animateCounter(el, num, 2000);
+                        }
+                    });
+                    // Animate progress bars
+                    entry.target.querySelectorAll('.data-bar-fill').forEach(function(bar) {
+                        setTimeout(function() { bar.classList.add('animated'); }, 200);
+                    });
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
+        document.querySelectorAll('[data-scroll]').forEach(function(el) { observer.observe(el); });
+
+        /* ===== UNIFIED SCROLL HANDLER ===== */
+        var navbar = document.getElementById('navbar');
+        var scrollProgress = document.getElementById('scrollProgress');
+        var backToTop = document.getElementById('backToTop');
+        var sectionDots = document.getElementById('sectionDots');
+        var lastScrollY = window.scrollY;
+        var sections = ['home','location','shelter','energy','water','food','impact','sewage'];
+        var sectionEls = sections.map(function(id) { return document.getElementById(id); });
+        var dotBtns = sectionDots ? sectionDots.querySelectorAll('.section-dot') : [];
+        var scrollRaf = null;
+
+        window.addEventListener('scroll', function() {
+            if (scrollRaf) return;
+            scrollRaf = requestAnimationFrame(function() {
+                var scrollY = window.scrollY;
+                var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                var pct = docHeight > 0 ? scrollY / docHeight : 0;
+
+                // Scroll progress
+                if (scrollProgress) scrollProgress.style.width = (pct * 100) + '%';
+
+                // Navbar shadow
+                if (navbar) navbar.classList.toggle('scrolled', scrollY > 80);
+
+                // Auto-hide navbar
+                if (navbar) {
+                    if (scrollY > 300 && scrollY > lastScrollY) navbar.classList.add('nav-hidden');
+                    else navbar.classList.remove('nav-hidden');
+                    lastScrollY = scrollY;
+                }
+
+                // Back to top
+                if (backToTop) backToTop.classList.toggle('show', scrollY > 500);
+
+                // Section dots
+                if (sectionDots) {
+                    sectionDots.classList.toggle('show', scrollY > 400);
+                    var activeId = sections[0];
+                    var scrollPos = scrollY + window.innerHeight / 3;
+                    sectionEls.forEach(function(el, i) {
+                        if (el && el.offsetTop <= scrollPos) activeId = sections[i];
+                    });
+                    dotBtns.forEach(function(d) { d.classList.remove('active'); });
+                    var activeDot = sectionDots.querySelector('[data-section="' + activeId + '"]');
+                    if (activeDot) activeDot.classList.add('active');
+                }
+
+                // Parallax images — disabled (causes gap)
+
+                scrollRaf = null;
+            });
+        }, { passive: true });
+
+        // Back to top click
+        if (backToTop) backToTop.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+        // Section dot clicks
+        dotBtns.forEach(function(d) {
+            d.addEventListener('click', function() {
+                var target = document.getElementById(d.getAttribute('data-section'));
+                if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+            });
+        });
+
+        /* ===== LIGHTBOX ===== */
+        var lightbox = document.getElementById('lightbox');
+        var lightboxImg = lightbox ? lightbox.querySelector('img') : null;
+        document.querySelectorAll('.main-image').forEach(function(el) {
+            el.addEventListener('click', function() {
+                var img = el.querySelector('img');
+                if (img && lightboxImg) {
+                    lightboxImg.src = img.src;
+                    lightboxImg.alt = img.alt;
+                    lightbox.classList.add('open');
+                }
+            });
+        });
+        if (lightbox) {
+            lightbox.addEventListener('click', function(e) {
+                if (e.target !== lightboxImg) lightbox.classList.remove('open');
+            });
+            lightbox.querySelector('.lightbox-close').addEventListener('click', function() { lightbox.classList.remove('open'); });
+        }
+
+        /* ===== ACCORDION ===== */
+        document.querySelectorAll('.accordion-header').forEach(function(header) {
+            header.addEventListener('click', function() {
+                var item = header.parentElement;
+                var wasOpen = item.classList.contains('open');
+                document.querySelectorAll('.accordion-item').forEach(function(a) { a.classList.remove('open'); });
+                if (!wasOpen) item.classList.add('open');
+            });
+        });
+
+        /* ===== CARBON CALCULATOR ===== */
+        var calcYears = document.getElementById('calcYears');
+        var calcCO2 = document.getElementById('calcCO2');
+        var calcResult = document.getElementById('calcResult');
+        var calcTrees = document.getElementById('calcTrees');
+        var calcYearsVal = document.getElementById('calcYearsVal');
+        var calcCO2Val = document.getElementById('calcCO2Val');
+        function updateCalc() {
+            if (!calcYears || !calcCO2) return;
+            var y = parseInt(calcYears.value), c = parseInt(calcCO2.value);
+            var total = y * c;
+            if (calcYearsVal) calcYearsVal.textContent = y;
+            if (calcCO2Val) calcCO2Val.textContent = c;
+            if (calcResult) calcResult.textContent = total.toLocaleString();
+            if (calcTrees) calcTrees.textContent = (total * 40).toLocaleString();
+        }
+        if (calcYears) calcYears.addEventListener('input', updateCalc);
+        if (calcCO2) calcCO2.addEventListener('input', updateCalc);
+        updateCalc();
+
+        /* ===== KEYBOARD SHORTCUTS ===== */
+        var shortcutsOverlay = document.getElementById('shortcutsOverlay');
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === '?' || e.key === '/') {
+                e.preventDefault();
+                shortcutsOverlay.classList.toggle('open');
+            }
+            if (e.key === 'Escape') {
+                shortcutsOverlay.classList.remove('open');
+                if (lightbox) lightbox.classList.remove('open');
+            }
+            if (e.key === 't' || e.key === 'T') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+        if (shortcutsOverlay) {
+            shortcutsOverlay.addEventListener('click', function(e) {
+                if (e.target === shortcutsOverlay) shortcutsOverlay.classList.remove('open');
+            });
+        }
+
+        /* ===== TOAST SYSTEM ===== */
+        var toastContainer = document.getElementById('toastContainer');
+        window.showToast = function(msg) {
+            if (!toastContainer) return;
+            var t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            toastContainer.appendChild(t);
+            setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translateY(-10px)'; setTimeout(function() { t.remove(); }, 300); }, 3000);
+        };
+
+        /* ===== SPOTLIGHT CURSOR (desktop) ===== */
+        if (window.matchMedia('(pointer: fine) and (min-width: 769px)').matches) {
+            var spotlight = document.getElementById('spotlight');
+            var spotRaf;
+            document.addEventListener('mousemove', function(e) {
+                if (spotRaf) return;
+                spotRaf = requestAnimationFrame(function() {
+                    spotlight.style.left = e.clientX + 'px';
+                    spotlight.style.top = e.clientY + 'px';
+                    spotlight.classList.add('active');
+                    spotRaf = null;
+                });
+            });
+            document.addEventListener('mouseleave', function() { spotlight.classList.remove('active'); });
+        }
+
+        /* ===== CARD GLOW FOLLOW ===== */
+        if (window.matchMedia('(pointer: fine)').matches) {
+            document.querySelectorAll('.info-box, .feature-box, .impact-card').forEach(function(el) {
+                el.addEventListener('mousemove', function(e) {
+                    var rect = el.getBoundingClientRect();
+                    el.style.setProperty('--glow-x', (e.clientX - rect.left) + 'px');
+                    el.style.setProperty('--glow-y', (e.clientY - rect.top) + 'px');
+                });
+            });
+        }
+
+        /* ===== 3D TILT (desktop) ===== */
+        if (window.matchMedia('(pointer: fine) and (min-width: 769px)').matches) {
+            document.querySelectorAll('.feature-box, .impact-card').forEach(function(card) {
+                card.addEventListener('mousemove', function(e) {
+                    var rect = card.getBoundingClientRect();
+                    var x = (e.clientX - rect.left) / rect.width - 0.5;
+                    var y = (e.clientY - rect.top) / rect.height - 0.5;
+                    card.style.transform = 'perspective(1000px) rotateY(' + (x * 4) + 'deg) rotateX(' + (-y * 4) + 'deg) translateY(-4px) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', function() { card.style.transform = ''; });
+            });
+        }
+
+        /* ===== MAGNETIC BUTTONS (desktop) ===== */
+        if (window.matchMedia('(pointer: fine)').matches) {
+            document.querySelectorAll('.cta-button, .back-to-top').forEach(function(el) {
+                el.addEventListener('mousemove', function(e) {
+                    var rect = el.getBoundingClientRect();
+                    var x = (e.clientX - rect.left - rect.width / 2) * 0.15;
+                    var y = (e.clientY - rect.top - rect.height / 2) * 0.15;
+                    el.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                });
+                el.addEventListener('mouseleave', function() { el.style.transform = ''; });
+            });
+        }
+
+    });
+    </script>
+</body>
+</html>
